@@ -1,0 +1,113 @@
+/* Main container for the header section */
+.header {
+  position: relative;
+  height: 100vh; /* Full screen height */
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Video element that fills the background */
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Optional overlay for better text contrast */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Semi-transparent dark overlay */
+  z-index: 0;
+}
+
+/* Content container on top of the video */
+.header-contents {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 50%;
+  height: 100%;
+  left: 6vw;
+  z-index: 1;
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Heading style */
+.header-contents h2 {
+  font-weight: 600;
+  color: white;
+  font-size: max(4.5vw, 22px);
+  margin-bottom: 1rem;
+}
+
+/* Paragraph style */
+.header-contents p {
+  color: white;
+  font-size: 1.3vw;
+  margin-bottom: 1.5rem;
+}
+
+/* Button style */
+.header-contents button {
+  border: none;
+  color: #333;
+  font-weight: 500;
+  padding: 1vw 2.3vw;
+  background-color: white;
+  font-size: max(1vw, 13px);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.header-contents button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 1050px) {
+  .header-contents {
+    max-width: 65%;
+  }
+
+  .header-contents p {
+    font-size: 1.2vw;
+  }
+}
+
+@media (max-width: 750px) {
+  .header-contents {
+    max-width: 90%;
+  }
+
+  .header-contents p {
+    display: none;
+  }
+
+  .header-contents button {
+    padding: 2vw 4vw;
+  }
+}

@@ -1,0 +1,19 @@
+@import "tailwindcss";
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
+/* body {
+  background: linear-gradient(to bottom right, #fff8dc, #ffe4b5);
+} */
+/* body {
+  background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/double-bubble-outline.png');
+  background-color: #fff8dc;
+} */
+/* body {
+  background: linear-gradient(to right, #fff8dc, #ffe4b5);
+} */

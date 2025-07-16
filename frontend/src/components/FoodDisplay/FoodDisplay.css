@@ -1,0 +1,130 @@
+/* FoodDisplay.css */
+
+.food-display {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.food-display-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+  font-weight: 700;
+  position: relative;
+}
+
+.food-display-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: #ff6b6b;
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+.category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.category-button {
+  padding: 0.6rem 1.2rem;
+
+  border: none;
+  border-radius: 30px;
+  background-image: linear-gradient(135deg, rgb(255, 215, 0), rgb(255, 170, 0));
+  color: rgb(123, 63, 0);
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-button:hover {
+  background-image: linear-gradient(135deg, rgb(255, 140, 0), rgb(255, 94, 0));
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.category-button.active {
+  background-color: #ff6b6b;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+/* Animation for food items */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.food-grid > * {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .food-display {
+    padding: 1.5rem;
+  }
+
+  .food-display-title {
+    font-size: 2rem;
+  }
+
+  .category-buttons {
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .category-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .food-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .food-display {
+    padding: 1rem;
+  }
+
+  .food-display-title {
+    font-size: 1.8rem;
+  }
+
+  .category-buttons {
+    gap: 0.5rem;
+  }
+
+  .food-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}

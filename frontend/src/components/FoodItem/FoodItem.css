@@ -1,0 +1,261 @@
+.food-item {
+  background-color: #fff8f1;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  position: relative;
+}
+
+.food-item:hover {
+  transform: scale(1.02);
+}
+
+.food-item-img-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.food-item-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.food-item-counter {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 24px;
+  z-index: 3;
+}
+
+.food-item-counter img {
+  width: 20px;
+  cursor: pointer;
+}
+
+.add-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  background-color: #f97316;
+  border-radius: 50%;
+  padding: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s;
+  z-index: 3;
+}
+
+.add-btn:hover {
+  background-color: #ea580c;
+}
+
+.food-item-info {
+  margin-top: 1rem;
+}
+
+.food-item-name-rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.food-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.food-item-desc {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 6px 0 12px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.food-item-options {
+  margin-top: 8px;
+}
+
+.single-price-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-price {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #d97706;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.buy-now-btn {
+  background: linear-gradient(to right, #f97316, #fbbf24);
+  border: none;
+  padding: 8px 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.85rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.buy-now-btn:hover {
+  background: linear-gradient(to right, #ea580c, #f59e0b);
+}
+
+.portion-selector {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.selected-option-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff7ed;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #fde68a;
+}
+
+.selected-portion span {
+  font-size: 0.85rem;
+  color: #555;
+  margin-right: 4px;
+}
+
+.selected-portion strong {
+  color: #ea580c;
+}
+
+.selected-price {
+  font-weight: bold;
+  color: #f97316;
+  margin-right: 10px;
+}
+
+/* Popup styles */
+.portion-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.portion-popup {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  width: 300px;
+  max-width: 90%;
+  text-align: center;
+}
+
+.portion-popup h3 {
+  margin-bottom: 16px;
+  color: #ea580c;
+}
+
+.portion-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.portion-option {
+  display: flex;
+  justify-content: space-between;
+  background: #fff7ed;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.portion-option:hover {
+  background: #fde68a;
+}
+
+.close-popup {
+  margin-top: 16px;
+  background: #f87171;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.close-popup:hover {
+  background: #ef4444;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff8f0;
+  border: 2px solid #f59e0b;
+  color: #4b2e0f;
+  font-size: 0.95rem;
+  padding: 10px 12px;
+  padding-right: 2.5rem;
+  border-radius: 10px;
+  width: 100%;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath fill='%23f97316' d='M7 10L0 0h14z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.65rem auto;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #fb923c;
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.3);
+}
+
+.custom-select option {
+  background-color: #fff;
+  color: #4b2e0f;
+}
