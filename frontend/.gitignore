@@ -1,19 +1,12 @@
+# Node modules (dependencies)
+node_modules/
 
+# Build output directory
+dist/
 
-node_modules
-dist
-dist-ssr
-*.local
+# Environment variables
+.env
 
-# Editor directories and files
+# VS Code settings (ignore all except extensions.json)
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-.env
