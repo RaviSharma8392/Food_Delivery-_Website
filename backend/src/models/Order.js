@@ -19,14 +19,12 @@ const OrderItemSchema = new mongoose.Schema({
 
 const OrderSchema = new mongoose.Schema(
   {
-    // Make userId optional for guest orders
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: false,
     },
 
-    // ✅ Guest info fields (optional if logged in)
     name: {
       type: String,
       required: function () {
@@ -55,7 +53,7 @@ const OrderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending","delivered", "cancelled"],
+      enum: ["pending", "delivered", "cancelled", "out_for_delivery"],
       default: "pending",
     },
     subtotal: {
@@ -76,6 +74,18 @@ const OrderSchema = new mongoose.Schema(
         (val) => val.length > 0,
         "Order must contain at least one item",
       ],
+    },
+
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
+    },
+
+    deliveryPartner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "DeliveryPartner", // 👈 Ensure this matches your model name exactly
+      required: false,
     },
   },
   { timestamps: true }

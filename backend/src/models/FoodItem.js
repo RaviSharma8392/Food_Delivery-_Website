@@ -16,6 +16,11 @@ const foodItemSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       required: true,
     },
+     restaurant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "restaurants", // Reference to Restaurant model
+      required: true,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "categories",

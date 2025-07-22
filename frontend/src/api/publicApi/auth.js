@@ -1,29 +1,37 @@
 import axios from "axios";
 
-const API_URL =  "http://localhost:3000/api/v1";
+//  Custom Axios instance for Auth APIs
+const authAPI = axios.create({
+  baseURL: import.meta.env.VITE_API_AUTH_URL,
+  withCredentials: true, 
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 
-// RaviRaj@gmail.com
+//   Login User
+ 
+export const loginUser = async (credentials) => {
+  const response = await authAPI.post("/login", credentials);
+  return response.data;
+};
 
 
+//  Signup User
+ 
 export const signupUser = async (userData) => {
-  console.log(userData)
   try {
-    console.log("reached api")
-    const response = await axios.post(`http://localhost:3000/api/v1/auth/createuser`, userData);
-    console.log("response")
-    console.log(userData)
+    const response = await authAPI.post("/createuser", userData);
     return {
       success: true,
       authToken: response.data.token,
-      user: response.data.user
+      user: response.data.user,
     };
   } catch (error) {
     return {
       success: false,
-      message: error.response?.data?.message 
+      message: error.response?.data?.message || "Signup failed",
     };
   }
 };
-
-

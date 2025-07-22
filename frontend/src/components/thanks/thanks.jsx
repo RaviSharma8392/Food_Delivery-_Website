@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaCheckCircle, FaHome, FaClock, FaListAlt } from "react-icons/fa";
 
 const Thanks = () => {
   const location = useLocation();
@@ -12,180 +13,67 @@ const Thanks = () => {
   );
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Baba Neeb Karoli Restro and Cafe</h1>
-          <div style={styles.divider}></div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-lg max-w-md w-full overflow-hidden border border-gray-100">
+        {/* Header */}
+        <div className="bg-white py-6 px-6 border-b border-gray-100">
+          <div className="flex justify-center text-green-500 mb-4">
+            <FaCheckCircle size={52} className="drop-shadow-sm" />
+          </div>
+          <h1 className="text-3xl font-bold text-center text-gray-800 mb-1">
+            Thank You!
+          </h1>
+          <p className="text-gray-500 text-center">
+            Your order has been received
+          </p>
         </div>
 
-        <div style={styles.content}>
-          <div style={styles.iconContainer}>
-            <svg style={styles.checkIcon} viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"
-              />
-            </svg>
-          </div>
-          <h2 style={styles.confirmationText}>Your Order is Confirmed!</h2>
-          <p style={styles.message}>
-            Thank you for your order. Our team is preparing your delicious food.
-          </p>
-
-          {orderDetails.length > 0 && (
-            <div style={styles.orderSummary}>
-              <h3 style={styles.summaryTitle}>Order Summary</h3>
-              <ul style={styles.itemList}>
-                {orderDetails.map((item, index) => (
-                  <li key={index} style={styles.item}>
-                    <span>
-                      {item.itemName} (x{item.quantity})
-                    </span>
-                    <span>₹{item.price * item.quantity}</span>
-                  </li>
-                ))}
-              </ul>
-              <div style={styles.totalContainer}>
-                <span style={styles.totalLabel}>Total:</span>
-                <span style={styles.totalAmount}>₹{totalAmount}</span>
-              </div>
+        {/* Content */}
+        <div className="p-6">
+          {/* Delivery Info */}
+          <div className="flex items-center bg-blue-50 rounded-lg p-4 mb-6">
+            <FaClock className="text-blue-500 text-xl mr-3" />
+            <div>
+              <h3 className="font-medium text-gray-800">Delivery Time</h3>
+              <p className="text-gray-600">30-45 minutes</p>
             </div>
-          )}
+          </div>
 
-          <p style={styles.footerMessage}>
-            We appreciate your business. Please visit us again!
-          </p>
+          {/* Order Summary */}
+          <div className="mb-6">
+            <div className="flex items-center text-gray-700 mb-3">
+              <FaListAlt className="mr-2" />
+              <h3 className="font-semibold">Order Summary</h3>
+            </div>
+            <div className="space-y-3">
+              {orderDetails.map((item, index) => (
+                <div key={index} className="flex justify-between items-center">
+                  <span className="text-gray-700">
+                    {item.itemName}{" "}
+                    <span className="text-gray-400">× {item.quantity}</span>
+                  </span>
+                  <span className="font-medium">
+                    ₹{item.price * item.quantity}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-gray-200 mt-4 pt-4 flex justify-between font-bold text-lg">
+              <span>Total:</span>
+              <span className="text-green-600">₹{totalAmount}</span>
+            </div>
+          </div>
 
-          <button onClick={() => navigate("/")} style={styles.button}>
-            Back to Home
+          <button
+            onClick={() => navigate("/")}
+            className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 px-6 rounded-lg flex items-center justify-center transition-colors shadow-md">
+            <FaHome className="mr-2" />
+            Return to Home
           </button>
         </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    minHeight: "100vh",
-    backgroundColor: "#f8f9fa",
-    padding: "100px 20px 40px",
-    fontFamily: "'Poppins', sans-serif",
-    boxSizing: "border-box",
-  },
-
-  card: {
-    backgroundColor: "white",
-    borderRadius: "15px",
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-    width: "100%",
-    maxWidth: "600px",
-    overflowY: "auto",
-    textAlign: "center",
-  },
-  header: {
-    backgroundColor: "#e63946",
-    padding: "25px 20px",
-    color: "white",
-  },
-  title: {
-    margin: 0,
-    fontSize: "26px",
-    fontWeight: "700",
-    letterSpacing: "1px",
-  },
-  divider: {
-    height: "4px",
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
-    margin: "15px auto",
-    width: "80px",
-  },
-  content: {
-    padding: "30px",
-  },
-  iconContainer: {
-    marginBottom: "20px",
-  },
-  checkIcon: {
-    width: "80px",
-    height: "80px",
-    color: "#4CAF50",
-  },
-  confirmationText: {
-    color: "#2b2d42",
-    fontSize: "24px",
-    margin: "10px 0",
-    fontWeight: "600",
-  },
-  message: {
-    color: "#6c757d",
-    fontSize: "16px",
-    lineHeight: "1.6",
-    marginBottom: "30px",
-  },
-  orderSummary: {
-    backgroundColor: "#f8f9fa",
-    borderRadius: "10px",
-    padding: "20px",
-    margin: "25px 0",
-    textAlign: "left",
-  },
-  summaryTitle: {
-    color: "#2b2d42",
-    fontSize: "18px",
-    margin: "0 0 15px 0",
-    paddingBottom: "10px",
-    borderBottom: "1px solid #eee",
-  },
-  itemList: {
-    listStyle: "none",
-    padding: 0,
-    margin: 0,
-  },
-  item: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "8px 0",
-    borderBottom: "1px dashed #ddd",
-    color: "#495057",
-  },
-  totalContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "15px",
-    paddingTop: "10px",
-    borderTop: "2px solid #ddd",
-    fontWeight: "bold",
-    fontSize: "18px",
-  },
-  totalLabel: {
-    color: "#2b2d42",
-  },
-  totalAmount: {
-    color: "#e63946",
-  },
-  footerMessage: {
-    color: "#6c757d",
-    fontSize: "15px",
-    fontStyle: "italic",
-    margin: "25px 0",
-  },
-  button: {
-    backgroundColor: "#e63946",
-    color: "white",
-    border: "none",
-    padding: "12px 30px",
-    borderRadius: "50px",
-    fontSize: "16px",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    marginTop: "10px",
-  },
 };
 
 export default Thanks;

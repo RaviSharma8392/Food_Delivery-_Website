@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
+
 
 import { PORT, connectDB } from "./src/config/index.js";
 import router from "./src/routes/index.js";
@@ -18,6 +18,9 @@ app.use(cors(corsOptions));
 // ✅ Middleware
 app.use(cookieParser());
 app.use(express.json());
+
+
+
 
 // ✅ Testing route
 app.get("/", (req, res) => {

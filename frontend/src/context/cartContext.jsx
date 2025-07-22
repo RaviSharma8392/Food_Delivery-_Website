@@ -7,12 +7,21 @@ const initialState = {
   total_item: 0,
   total_amount: 0,
   delivery_fees: 50,
+  restaurantId: "",
+  restaurantName: "",
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "ADD_TO_CART": {
-      const { id, amount, portion, item } = action.payload;
+      const { id, amount, portion, item, price, restaurantId, restaurantName } =
+        action.payload;
+
+      // Only allow one restaurant
+      if (state.cart.length > 0 && state.restaurantId !== restaurantId) {
+        alert("You can only order from one restaurant at a time.");
+        return state;
+      }
 
       const existingItemIndex = state.cart.findIndex(
         (cartItem) => cartItem.id === id && cartItem.portion === portion
@@ -32,13 +41,19 @@ const reducer = (state, action) => {
           {
             id,
             portion,
-            item, // Make sure item includes .price
+            item,
+            price, // ✅ Store price directly here
             quantity: amount,
           },
         ];
       }
 
-      return { ...state, cart: updatedCart };
+      return {
+        ...state,
+        cart: updatedCart,
+        restaurantId,
+        restaurantName,
+      };
     }
 
     case "REMOVE_FROM_CART": {
@@ -72,7 +87,8 @@ const reducer = (state, action) => {
     case "CALCULATE_TOTAL": {
       const { totalAmount, totalItems } = state.cart.reduce(
         (acc, item) => {
-          acc.totalAmount += item.quantity * item.item.price;
+          const price = Number(item.price); // ✅ Use directly stored price
+          acc.totalAmount += item.quantity * (isNaN(price) ? 0 : price);
           acc.totalItems += item.quantity;
           return acc;
         },
@@ -87,10 +103,22 @@ const reducer = (state, action) => {
     }
 
     case "CLEAR_CART":
-      return { ...state, cart: [], total_amount: 0, total_item: 0 };
+      return {
+        ...state,
+        cart: [],
+        total_amount: 0,
+        total_item: 0,
+        restaurantId: "",
+        restaurantName: "",
+      };
 
     case "SET_CART":
-      return { ...state, cart: action.payload };
+      return {
+        ...state,
+        cart: action.payload.cart || [],
+        restaurantId: action.payload.restaurantId || "",
+        restaurantName: action.payload.restaurantName || "",
+      };
 
     default:
       return state;
@@ -100,22 +128,56 @@ const reducer = (state, action) => {
 const DataProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Load cart from localStorage
   useEffect(() => {
     const storedCart = localStorage.getItem("cartData");
+    const storedRestaurantId = localStorage.getItem("cartRestaurantId");
+    const storedRestaurantName = localStorage.getItem("cartRestaurantName");
+
     if (storedCart) {
-      dispatch({ type: "SET_CART", payload: JSON.parse(storedCart) });
+      dispatch({
+        type: "SET_CART",
+        payload: {
+          cart: JSON.parse(storedCart),
+          restaurantId: storedRestaurantId,
+          restaurantName: storedRestaurantName,
+        },
+      });
     }
   }, []);
 
+  // Save cart to localStorage
   useEffect(() => {
     localStorage.setItem("cartData", JSON.stringify(state.cart));
+    localStorage.setItem("cartRestaurantId", state.restaurantId);
+    localStorage.setItem("cartRestaurantName", state.restaurantName);
     dispatch({ type: "CALCULATE_TOTAL" });
   }, [state.cart]);
 
-  const addToCart = (id, amount, portion, item) => {
+  const addToCart = (
+    item,
+    portion,
+    price,
+    quantity,
+    restaurantId,
+    restaurantName
+  ) => {
+    if (!item || !item._id) {
+      console.error("Item is undefined or missing _id");
+      return;
+    }
+
     dispatch({
       type: "ADD_TO_CART",
-      payload: { id, amount, portion, item },
+      payload: {
+        id: item._id,
+        amount: quantity,
+        portion,
+        item,
+        price, // ✅ pass price here
+        restaurantId,
+        restaurantName,
+      },
     });
   };
 
@@ -133,6 +195,8 @@ const DataProvider = ({ children }) => {
   const clearCart = () => {
     dispatch({ type: "CLEAR_CART" });
     localStorage.removeItem("cartData");
+    localStorage.removeItem("cartRestaurantId");
+    localStorage.removeItem("cartRestaurantName");
   };
 
   const value = {
@@ -140,8 +204,8 @@ const DataProvider = ({ children }) => {
     addToCart,
     removeFromCart,
     updateQuantity,
-    grand_total: state.total_amount + state.delivery_fees,
     clearCart,
+    grand_total: state.total_amount + state.delivery_fees,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -1,8 +1,35 @@
-import { getSalesToday, getWeeklySales,getMonthlySalesCash,getMonthlySalesOnline } from "./adminApi/adminApi"
-import {signupUser} from "./publicApi/auth"
-import { fetchFoodList } from "./publicApi/foodItem"
-import placeOrderAPI from "./publicApi/placeOrder"
+// Auth APIs
+import { signupUser } from "./publicApi/auth";
 
-export {
-    signupUser,fetchFoodList,getSalesToday,getWeeklySales,getMonthlySalesCash,getMonthlySalesOnline,placeOrderAPI
-}
+// Public APIs (Food & Restaurant)
+import { fetchRestaurantDetails, searchFoodItems } from "./publicApi/foodItem";
+import placeOrder from "./publicApi/placeOrder";
+import orderApi from "./order/order";
+
+// Admin APIs (Analytics)
+import {
+  getSalesToday,
+  getWeeklySales,
+  getMonthlySalesCash,
+  getMonthlySalesOnline,
+} from "./adminApi/adminApi";
+
+// Grouped and exported as objects
+const authAPI = {
+  signupUser,
+};
+
+const publicAPI = {
+  fetchRestaurantDetails,
+  searchFoodItems,
+  placeOrder,
+};
+
+const adminAPI = {
+  getSalesToday,
+  getWeeklySales,
+  getMonthlySalesCash,
+  getMonthlySalesOnline,
+};
+// Final export
+export { authAPI, publicAPI, adminAPI,orderApi };

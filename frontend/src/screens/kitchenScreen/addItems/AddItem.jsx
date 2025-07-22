@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { fetchFoodList } from "../../../api/publicApi/foodItem";
 
 export default function AddItems() {
-  const host = "http://localhost:5000";
+  const host = "http://localhost:3000";
 
   const [categories, setCategories] = useState([]);
   const [preview, setPreview] = useState(null);
@@ -22,10 +23,10 @@ export default function AddItems() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await axios.get(`${host}/api/user/foodData`, {
-          withCredentials: true,
-        });
-        setCategories(res.data.foodCategories || []);
+        const response = await fetchFoodList();
+        console.log(response);
+
+        setCategories(response.foodCategories);
       } catch (err) {
         console.error("Failed to fetch categories", err);
         alert("Failed to fetch categories");
@@ -110,7 +111,7 @@ export default function AddItems() {
     try {
       const payload = buildPayload();
 
-      await axios.post(`${host}/api/kitchen/addfooditem`, payload, {
+      await axios.post(`${host}/api/v1/kitchen/addfooditem`, payload, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
       });

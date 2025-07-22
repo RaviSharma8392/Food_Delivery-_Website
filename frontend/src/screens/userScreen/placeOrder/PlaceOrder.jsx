@@ -2,19 +2,31 @@ import React, { useState } from "react";
 import { useCartContext } from "../../../context/cartContext";
 import useUserContext from "../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   FiCreditCard,
   FiDollarSign,
   FiMapPin,
   FiShoppingCart,
+  FiChevronRight,
+  FiCheck,
+  FiX,
 } from "react-icons/fi";
-import "./PlaceOrder.css";
-import { placeOrderAPI } from "../../../api";
+import { publicAPI } from "../../../api/index";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
-  const { cart, total_amount, delivery_fees, grand_total, clearCart } =
-    useCartContext();
+  const {
+    cart,
+    total_amount,
+    delivery_fees,
+    grand_total,
+    clearCart,
+    restaurantId,
+    restaurantName,
+  } = useCartContext();
   const { user } = useUserContext();
   const { token } = user;
 
@@ -23,11 +35,43 @@ const PlaceOrder = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Promo code logic
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [promoError, setPromoError] = useState("");
+  const [showPromoSuccess, setShowPromoSuccess] = useState(false);
+
+  const promoCodes = {
+    SAVE10: 10,
+    SAVE20: 20,
+    FOODIE30: 30,
+    EATWELL40: 40,
+    MEGA50: 50,
+  };
+
+  const applyPromoCode = () => {
+    const code = promoCode.trim().toUpperCase();
+    if (promoCodes[code]) {
+      setDiscount(promoCodes[code]);
+      setPromoError("");
+      setShowPromoSuccess(true);
+      setTimeout(() => setShowPromoSuccess(false), 3000);
+    } else {
+      setDiscount(0);
+      setPromoError("Invalid promo code");
+    }
+  };
+
+  const discountAmount = (grand_total * discount) / 100;
+  const discountedTotal = grand_total - discountAmount;
+
+  // Handle order submission
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
+    // Form validations
     if (cart.length === 0) {
       setError("Your cart is empty!");
       setIsLoading(false);
@@ -40,13 +84,18 @@ const PlaceOrder = () => {
       return;
     }
 
+    // Prepare order payload
     const orderData = {
       userId: user.user._id,
       address,
       method: paymentMethod,
       subtotal: total_amount,
       deliveryFee: delivery_fees,
-      totalAmount: grand_total,
+      totalAmount: discountedTotal,
+      promoCode: promoCode.toUpperCase(),
+      discountPercentage: discount,
+      discountAmount,
+      restaurantId,
       items: cart.map((item) => ({
         itemId: item.id,
         quantity: item.quantity,
@@ -55,24 +104,29 @@ const PlaceOrder = () => {
     };
 
     try {
-      const res = await placeOrderAPI(orderData, token);
+      const res = await publicAPI.placeOrder(orderData, token);
 
       if (res.status === 201) {
+        toast.success("✅ Order placed successfully!", { autoClose: 2000 });
         clearCart();
-        alert("✅ Order placed successfully!");
+
+        // Navigate to Thanks page with order summary
         navigate("/thanks", {
           state: {
             cart: cart.map((item) => ({
-              itemName: item.item.name,
+              name: item.item.name,
               quantity: item.quantity,
               price: item.item.price,
+              portion: item.portion,
             })),
+            total: discountedTotal,
+            address,
           },
         });
       }
     } catch (err) {
       console.error("Order error:", err);
-      setError(
+      toast.error(
         err.response?.data?.message ||
           "An error occurred while placing your order"
       );
@@ -89,119 +143,217 @@ const PlaceOrder = () => {
     });
 
   return (
-    <div className="place-order-container">
-      <div className="place-order-header">
-        <h1>
-          <FiShoppingCart /> Checkout
-        </h1>
-        <p>Review your order details</p>
+    <div className="max-w-6xl mt-6 mx-auto px-4 py-8">
+      {/* 🛒 Checkout Header */}
+      <div className="flex items-center mb-6">
+        <div className="p-3 bg-orange-100 rounded-full mr-4">
+          <FiShoppingCart className="text-orange-500 text-xl" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Checkout</h1>
+          <p className="text-gray-600">Review your order details</p>
+        </div>
       </div>
 
-      <div className="place-order-grid">
-        <div className="delivery-details">
-          <div className="section-header">
-            <FiMapPin className="icon" />
-            <h2>Delivery Information</h2>
-          </div>
+      {/* Main content split in 2 columns */}
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Left: Address + Payment Method */}
+        <div className="lg:w-2/3">
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            {/* 📍 Address Input */}
+            <div className="flex items-center mb-6">
+              <div className="p-2 bg-blue-100 rounded-full mr-3">
+                <FiMapPin className="text-blue-500" />
+              </div>
+              <h2 className="text-xl font-semibold">Delivery Information</h2>
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="address">Delivery Address</label>
-            <textarea
-              id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter full delivery address with landmarks"
-              rows="4"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="payment">
-              <FiCreditCard className="icon" /> Payment Method
-            </label>
-            <div className="payment-options">
+            <div className="mb-6">
               <label
-                className={`payment-option ${
-                  paymentMethod === "cash" ? "active" : ""
-                }`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="cash"
-                  checked={paymentMethod === "cash"}
-                  onChange={() => setPaymentMethod("cash")}
-                />
-                <FiDollarSign /> Cash on Delivery
+                htmlFor="address"
+                className="block text-gray-700 font-medium mb-2">
+                Delivery Address
+              </label>
+              <textarea
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                rows="4"
+                placeholder="Enter full delivery address with landmarks"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            {/* 💳 Payment Method */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-3">
+                <div className="flex items-center">
+                  <div className="p-2 bg-purple-100 rounded-full mr-3">
+                    <FiCreditCard className="text-purple-500" />
+                  </div>
+                  <span>Payment Method</span>
+                </div>
               </label>
 
-              <label
-                className={`payment-option ${
-                  paymentMethod === "online" ? "active" : ""
-                }`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="online"
-                  checked={paymentMethod === "online"}
-                  onChange={() => setPaymentMethod("online")}
-                />
-                <FiCreditCard /> Online Payment
-              </label>
+              {/* Method options */}
+              <div className="space-y-3">
+                {["cash", "online"].map((method) => (
+                  <div
+                    key={method}
+                    onClick={() => setPaymentMethod(method)}
+                    className={`flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition ${
+                      paymentMethod === method
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}>
+                    <div className="flex items-center">
+                      <div
+                        className={`p-2 rounded-full mr-3 ${
+                          method === "cash" ? "bg-green-100" : "bg-blue-100"
+                        }`}>
+                        {method === "cash" ? (
+                          <FiDollarSign className="text-green-500" />
+                        ) : (
+                          <FiCreditCard className="text-blue-500" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-medium capitalize">{method}</h3>
+                        <p className="text-sm text-gray-500">
+                          {method === "cash"
+                            ? "Pay when you receive your order"
+                            : "Pay securely with UPI, cards or wallets"}
+                        </p>
+                      </div>
+                    </div>
+                    {paymentMethod === method && (
+                      <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
+                        <FiCheck className="text-white text-xs" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="order-summary">
-          <div className="section-header">
-            <FiShoppingCart className="icon" />
-            <h2>Order Summary</h2>
-          </div>
+        {/* Right: Summary + Submit */}
+        <div className="lg:w-1/3">
+          <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <FiShoppingCart className="mr-2 text-orange-500" />
+              Order Summary
+            </h2>
 
-          <div className="order-items">
-            {cart.map((item) => (
-              <div key={`${item.id}-${item.portion}`} className="order-item">
-                <div className="item-info">
-                  <span className="item-name">
-                    {item.item.name} ({item.portion})
+            {/* Restaurant Info */}
+            {restaurantName && (
+              <p className="text-gray-800 mb-3">
+                Restaurant:{" "}
+                <span className="text-orange-600">{restaurantName}</span>
+              </p>
+            )}
+
+            {/* 🛍️ Cart Items */}
+            <div className="mb-4 max-h-64 overflow-y-auto">
+              {cart.map((item) => (
+                <div
+                  key={`${item.id}-${item.portion}`}
+                  className="flex justify-between py-3 border-b">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-800">
+                      {item.item.name}{" "}
+                      <span className="text-gray-500">({item.portion})</span>
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Qty: {item.quantity}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium">
+                      {formatINR(item.item.price * item.quantity)}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {formatINR(item.item.price)} each
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 🏷️ Promo Code */}
+            <div className="mb-4">
+              <label className="block text-gray-700 font-medium mb-2">
+                Apply Promo Code
+              </label>
+              <div className="flex">
+                <input
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="e.g. SAVE10"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-orange-500"
+                />
+                <button
+                  type="button"
+                  onClick={applyPromoCode}
+                  className="px-4 py-2 bg-orange-500 text-white font-medium rounded-r-lg hover:bg-orange-600">
+                  Apply
+                </button>
+              </div>
+              {promoError && (
+                <p className="mt-2 text-sm text-red-500 flex items-center">
+                  <FiX className="mr-1" /> {promoError}
+                </p>
+              )}
+              {showPromoSuccess && (
+                <div className="mt-2 p-2 bg-green-100 text-green-700 rounded-lg text-sm flex items-center">
+                  <FiCheck className="mr-2" />
+                  {discount}% discount applied! You saved{" "}
+                  {formatINR(discountAmount)}.
+                </div>
+              )}
+            </div>
+
+            {/* 💰 Price Summary */}
+            <div className="mb-6">
+              <div className="flex justify-between py-2">
+                <span className="text-gray-600">Subtotal</span>
+                <span className="font-medium">{formatINR(total_amount)}</span>
+              </div>
+              <div className="flex justify-between py-2">
+                <span className="text-gray-600">Delivery Fee</span>
+                <span className="font-medium">{formatINR(delivery_fees)}</span>
+              </div>
+              {discount > 0 && (
+                <div className="flex justify-between py-2">
+                  <span className="text-gray-600">Discount</span>
+                  <span className="text-green-600">
+                    -{formatINR(discountAmount)}
                   </span>
                 </div>
-                <div className="item-price">
-                  {item.quantity} × ₹{item.item.price} = ₹
-                  {item.quantity * item.item.price}
-                </div>
+              )}
+              <div className="flex justify-between py-3 border-t mt-2">
+                <strong>Total</strong>
+                <strong className="text-orange-600">
+                  {formatINR(discountedTotal)}
+                </strong>
               </div>
-            ))}
+            </div>
+
+            {/* 🧾 Submit Button */}
+            <button
+              onClick={handleOrderSubmit}
+              disabled={isLoading}
+              className={`w-full py-3 px-4 rounded-lg font-bold text-white transition ${
+                isLoading
+                  ? "bg-orange-400 cursor-not-allowed"
+                  : "bg-orange-500 hover:bg-orange-600"
+              }`}>
+              {isLoading
+                ? "Placing Order..."
+                : `Place Order (${formatINR(discountedTotal)})`}
+            </button>
           </div>
-
-          <div className="price-breakdown">
-            <div className="price-row">
-              <span>Subtotal</span>
-              <span>{formatINR(total_amount)}</span>
-            </div>
-            <div className="price-row">
-              <span>Delivery Fee</span>
-              <span>{formatINR(delivery_fees)}</span>
-            </div>
-            <div className="price-row total">
-              <strong>Total Amount</strong>
-              <strong>{formatINR(grand_total)}</strong>
-            </div>
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <button
-            type="button"
-            onClick={handleOrderSubmit}
-            className="place-order-btn"
-            disabled={isLoading}>
-            {isLoading ? (
-              <span className="spinner"></span>
-            ) : (
-              `Place Order (${formatINR(grand_total)})`
-            )}
-          </button>
         </div>
       </div>
     </div>
