@@ -23,6 +23,8 @@ const { Title } = Typography;
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const AdminUsersPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,12 +40,9 @@ const AdminUsersPage = () => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          "http://localhost:3000/api/v1/admin/users"
-        );
+        const response = await axios.get(`${API_BASE_URL}/api/v1/admin/users`);
         setUsers(response.data);
 
-        // Calculate stats
         const totalRevenue = response.data.reduce(
           (sum, user) => sum + (user.totalSpent || 0),
           0
@@ -57,10 +56,9 @@ const AdminUsersPage = () => {
           activeUsers,
           totalRevenue,
         });
-
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching users:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -69,13 +67,11 @@ const AdminUsersPage = () => {
   }, []);
 
   const filteredUsers = users.filter((user) => {
-    // Filter by search term
     const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // Filter by date range
     let matchesDate = true;
     if (dateRange && dateRange.length === 2) {
       const joinDate = moment(user.createdAt);
@@ -161,7 +157,6 @@ const AdminUsersPage = () => {
   ];
 
   const viewUserDetails = (user) => {
-    // Implement modal or page navigation to show user details
     console.log("View user:", user);
   };
 
@@ -169,7 +164,6 @@ const AdminUsersPage = () => {
     <div style={{ padding: "24px" }}>
       <Title level={2}>Users Dashboard</Title>
 
-      {/* Stats Cards */}
       <Row gutter={16} style={{ marginBottom: "24px" }}>
         <Col span={8}>
           <Card>
@@ -201,7 +195,6 @@ const AdminUsersPage = () => {
         </Col>
       </Row>
 
-      {/* Filters */}
       <div style={{ marginBottom: "24px" }}>
         <Row gutter={16}>
           <Col span={12}>
@@ -225,7 +218,6 @@ const AdminUsersPage = () => {
         </Row>
       </div>
 
-      {/* Users Table */}
       <Table
         columns={columns}
         dataSource={filteredUsers}

@@ -48,29 +48,50 @@ export default function Login() {
   };
 
   return (
-    <div className="h-screen mt-10 w-full bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center overflow-hidden">
-      <div className="w-full max-w-md bg-white rounded-none sm:rounded-xl shadow-lg h-full sm:h-auto sm:my-6 flex flex-col">
-        <div className="bg-orange-500 p-6 text-center text-white">
-          <h1 className="text-2xl font-bold">Welcome to FoodExpress</h1>
-          <p className="opacity-90 mt-1">Sign in to continue</p>
+    <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center p-4">
+      {/* Food delivery app background elements */}
+      <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-r from-[#fc8019] to-[#f8462d] rounded-b-3xl z-0"></div>
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#fef0e8] rounded-tl-full z-0"></div>
+
+      {/* Main card */}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl z-10 overflow-hidden">
+        {/* App-branded header */}
+        <div className="bg-gradient-to-r from-[#fc8019] to-[#f8462d] p-6 text-center text-white relative">
+          <div className="absolute -top-6 -left-6 w-24 h-24 bg-white rounded-full opacity-10"></div>
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white rounded-full opacity-10"></div>
+          <h1 className="text-3xl font-bold mb-1">FoodExpress</h1>
+          <p className="opacity-90 text-sm">Good food is waiting!</p>
         </div>
 
+        {/* Error message */}
         {error && (
-          <div className="bg-red-50 text-red-600 px-4 py-3 mx-4 mt-4 rounded-lg text-sm">
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mx-6 mt-6 rounded-lg text-sm flex items-center">
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
             {error}
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="p-6 flex-1 space-y-5 overflow-y-auto">
-          <div className="space-y-1">
+        {/* Login form */}
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          {/* Email field */}
+          <div className="space-y-2">
             <label
               htmlFor="email"
               className="block text-sm font-medium text-gray-700">
               Email Address
             </label>
-            <div className="relative">
+            <div className="relative rounded-lg shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FiMail className="text-gray-400" />
               </div>
@@ -81,19 +102,20 @@ export default function Login() {
                 value={credentials.email}
                 onChange={onChange}
                 placeholder="your@email.com"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent placeholder-gray-400 transition-all"
                 required
               />
             </div>
           </div>
 
-          <div className="space-y-1">
+          {/* Password field */}
+          <div className="space-y-2">
             <label
               htmlFor="password"
               className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            <div className="relative">
+            <div className="relative rounded-lg shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FiLock className="text-gray-400" />
               </div>
@@ -104,7 +126,7 @@ export default function Login() {
                 value={credentials.password}
                 onChange={onChange}
                 placeholder="••••••••"
-                className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="block w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent placeholder-gray-400 transition-all"
                 required
               />
               <button
@@ -112,45 +134,46 @@ export default function Login() {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 onClick={togglePasswordVisibility}>
                 {showPassword ? (
-                  <FiEyeOff className="text-gray-400 hover:text-gray-500" />
+                  <FiEyeOff className="text-gray-500 hover:text-gray-700 transition-colors" />
                 ) : (
-                  <FiEye className="text-gray-400 hover:text-gray-500" />
+                  <FiEye className="text-gray-500 hover:text-gray-700 transition-colors" />
                 )}
               </button>
             </div>
           </div>
 
+          {/* Remember me & Forgot password */}
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-orange-500 border-gray-300 rounded"
+                className="h-4 w-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
               />
               <label
                 htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-700">
+                className="ml-2 block text-sm text-gray-600">
                 Remember me
               </label>
             </div>
-
-            <div className="text-sm">
-              <Link
-                to="/forgot-password"
-                className="font-medium text-orange-500 hover:underline">
-                Forgot password?
-              </Link>
-            </div>
+            <Link
+              to="/forgot-password"
+              className="text-sm font-medium text-orange-500 hover:text-orange-600 transition-colors">
+              Forgot password?
+            </Link>
           </div>
 
+          {/* Submit button */}
           <div className="pt-2">
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 ${
-                isLoading ? "opacity-75" : "hover:bg-orange-600"
-              } bg-orange-500`}>
+              className={`w-full flex justify-center items-center py-3 px-4 rounded-lg text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all ${
+                isLoading
+                  ? "bg-orange-400 cursor-not-allowed"
+                  : "bg-orange-500 hover:bg-orange-600 shadow-md"
+              }`}>
               {isLoading ? (
                 <>
                   <svg
@@ -170,7 +193,7 @@ export default function Login() {
                       fill="currentColor"
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Processing...
+                  Signing in...
                 </>
               ) : (
                 <>
@@ -182,13 +205,14 @@ export default function Login() {
           </div>
         </form>
 
-        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-          <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+        {/* Sign up link */}
+        <div className="px-8 pb-8 text-center">
+          <p className="text-sm text-gray-600">
+            New to FoodExpress?{" "}
             <Link
               to="/signup"
-              className="font-medium text-orange-500 hover:underline">
-              Sign up
+              className="font-medium text-orange-500 hover:text-orange-600 transition-colors">
+              Create an account
             </Link>
           </p>
         </div>

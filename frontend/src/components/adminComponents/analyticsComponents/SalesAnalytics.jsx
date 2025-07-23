@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL; // ✅ Load from .env
 const COLORS = ["#F59E0B", "#10B981", "#3B82F6", "#EF4444", "#8B5CF6"];
 
 const SalesAnalytics = ({ timeRange = "week" }) => {
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
+  const url = `${BASE_URL}/api/v1/admin/analytics/sales`; // ✅ Use dynamic base URL
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          "http://localhost:3000/api/v1/admin/analytics/sales",
-          { params: { period: timeRange } }
-        );
+        const res = await axios.get(url, { params: { period: timeRange } });
         setAnalytics(res.data);
       } catch (error) {
         console.error("Error loading analytics:", error);
@@ -30,7 +29,6 @@ const SalesAnalytics = ({ timeRange = "week" }) => {
   if (!analytics) return <p>No analytics data available</p>;
 
   const { orderStatus, timeline, deliveryMetrics, topRestaurants } = analytics;
-
   const maxOrders = Math.max(...timeline.map((t) => t.orderCount), 1);
   const maxTopSales = Math.max(...topRestaurants.map((r) => r.orderCount), 1);
   const totalStatusCount = orderStatus.reduce((acc, s) => acc + s.count, 0);
@@ -86,7 +84,7 @@ const SalesAnalytics = ({ timeRange = "week" }) => {
         </div>
       </div>
 
-      {/* Timeline (Orders per Day) */}
+      {/* Timeline */}
       <div>
         <h3 className="font-semibold mb-2">Orders Timeline</h3>
         <div className="flex items-end gap-4 h-40 border-b border-gray-200 pb-4">

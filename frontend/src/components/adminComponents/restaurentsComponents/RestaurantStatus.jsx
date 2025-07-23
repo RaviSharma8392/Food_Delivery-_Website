@@ -15,11 +15,13 @@ const RestaurantStatus = () => {
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
 
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   useEffect(() => {
     const fetchRestaurantStats = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/v1/admin/restaurants/stats"
+          `${BASE_URL}/api/v1/admin/restaurants/stats`
         );
         console.log(response);
         setRestaurantStats(response.data);
@@ -32,19 +34,20 @@ const RestaurantStatus = () => {
     };
 
     fetchRestaurantStats();
-  }, []);
+  }, [BASE_URL]);
 
   const toggleRestaurantStatus = async (restaurantId, currentStatus) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/v1/admin/restaurants/${restaurantId}/toggle-status`,
+        `${BASE_URL}/api/v1/admin/restaurants/${restaurantId}/toggle-status`,
         {
           active: !currentStatus,
         }
       );
+
       // Refresh stats after update
       const response = await axios.get(
-        "http://localhost:3000/api/v1/admin/restaurants/stats"
+        `${BASE_URL}/api/v1/admin/restaurants/stats`
       );
       setRestaurantStats(response.data);
     } catch (err) {

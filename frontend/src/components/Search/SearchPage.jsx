@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaSearch, FaUtensils, FaSpinner } from "react-icons/fa";
-import { searchFoodItems } from "../../api";
+
+// const BASE_URL = "http://localhost:3000/api/v1/public";
+const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/public`;
+console.log(BASE_URL);
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,8 +26,14 @@ const SearchPage = () => {
     const fetchFoodItems = async () => {
       try {
         setIsLoading(true);
-        const data = await searchFoodItems();
-        setFoodItems(data || []);
+        const res = await fetch(`${BASE_URL}/foods`);
+        const json = await res.json();
+
+        if (!res.ok || !json.success) {
+          throw new Error(json.message || "Failed to fetch food items");
+        }
+
+        setFoodItems(json.data || []);
         setError(null);
       } catch (err) {
         setError("Failed to load food items. Please try again.");
@@ -62,19 +71,16 @@ const SearchPage = () => {
 
   const handleItemClick = async (restaurantId) => {
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/v1/public/restaurant/${restaurantId}`
-      );
+      const res = await fetch(`${BASE_URL}/restaurant/${restaurantId}`);
       const json = await res.json();
 
-      if (json.success) {
-        const restaurant = json.data;
-        console.log(restaurant);
-        const slug = restaurant.name.toLowerCase().replace(/\s+/g, "-");
-        navigate(`/restaurant/${slug}`, { state: { restaurant } });
-      } else {
-        console.error("Restaurant not found:", json.message);
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Restaurant not found");
       }
+
+      const restaurant = json.data;
+      const slug = restaurant.name.toLowerCase().replace(/\s+/g, "-");
+      navigate(`/restaurant/${slug}`, { state: { restaurant } });
     } catch (err) {
       console.error("Error fetching restaurant:", err);
     }

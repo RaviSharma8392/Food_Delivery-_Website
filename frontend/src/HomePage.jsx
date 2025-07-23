@@ -77,8 +77,9 @@ const Homepage = () => {
       <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
         <HeroBanner />
         <MobileHeroBanner />
-        {/* <CategoryList /> */}
-        <RestaurantList /> <WhyChooseUs />
+        <CategoryList />
+        <RestaurantList />
+        <WhyChooseUs />
         <Deals />
         <LocationsSection />
         <PopularRestaurants />

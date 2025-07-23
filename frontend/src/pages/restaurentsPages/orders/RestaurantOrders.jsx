@@ -12,6 +12,9 @@ import {
 import { toast } from "react-toastify";
 import "./RestaurantOrders.css";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log(BASE_URL);
+
 const RestaurantOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,16 +63,14 @@ const RestaurantOrders = () => {
       color: "bg-red-100 text-red-800",
     },
   };
-
+  console.log("hi admin");
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        "http://localhost:3000/api/v1/public/orders",
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get(`${BASE_URL}/api/v1/public/orders`, {
+        withCredentials: true,
+      });
+      console.log(data);
       setOrders(data.orders || []);
     } catch (error) {
       toast.error("Failed to fetch orders");
@@ -82,7 +83,7 @@ const RestaurantOrders = () => {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/v1/restaurant/orders/${orderId}/status`,
+        `${BASE_URL}/api/v1/restaurant/orders/${orderId}/status`,
         { status: newStatus },
         { withCredentials: true }
       );

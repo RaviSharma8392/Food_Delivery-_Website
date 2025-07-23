@@ -52,7 +52,7 @@ export const getFoodItem = async (req, res) => {
   }
 };
 
-// ✅ GET: Food data by restaurant with optional includes
+// ✅ GET: Food data by restaurant getFilteredFoodItemswith optional includes
 
 export const getFoodData = async (req, res) => {
   try {
@@ -108,7 +108,97 @@ export const getFoodData = async (req, res) => {
     });
   }
 };
+export const getFilteredFoodItems = async (req, res) => {
+  try {
+    const { restaurantId, categoryName } = req.query;
 
+    if (!restaurantId || !categoryName) {
+      return res.status(400).json({ message: "restaurantId and categoryName are required." });
+    }
+
+    // Step 1: Find category ID from name
+    const category = await Category.findOne({ name: { $regex: new RegExp(categoryName, "i") } });
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // Step 2: Find food items by restaurant and category
+    const foodItems = await FoodItem.find({
+      restaurant: restaurantId,
+      category: category._id,
+    });
+
+    res.status(200).json(foodItems);
+  } catch (error) {
+    console.error("Error fetching filtered food items:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ GET: Food data by location with category includes
+
+export const getRestaurantsByLocationAndCategory = async (req, res) => {
+  try {
+    const { location, category: categoryName } = req.query;
+
+    if (!location || !categoryName) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Missing location or category",
+      });
+    }
+
+    // Step 1: Find category by name (case-insensitive)
+    const category = await Category.findOne({
+      name: { $regex: new RegExp(categoryName, "i") },
+    });
+
+    if (!category) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "Category not found",
+      });
+    }
+
+    const categoryId = category._id;
+
+    // Step 2: Find food items matching category
+    const foodItems = await FoodItem.find({ category: categoryId }).populate({
+      path: "restaurant",
+      match: {
+        mainLocation: { $regex: new RegExp(location, "i") },
+      },
+    });
+
+    // Step 3: Filter items that have a valid restaurant
+    const validItems = foodItems.filter(item => item.restaurant);
+
+    // Step 4: Extract unique restaurant IDs
+    const restaurantIds = [
+      ...new Set(validItems.map(item => item.restaurant._id.toString())),
+    ];
+
+    // Step 5: Get restaurants by IDs
+    const restaurants = await Restaurant.find({ _id: { $in: restaurantIds } });
+
+    // ✅ Final Response
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      category: {
+        _id: category._id,
+        name: category.name,
+        image: category.image || null,
+      },
+      restaurants,
+    });
+
+  } catch (error) {
+    console.error("Error in getRestaurantsByLocationAndCategory:", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 
 // ✅ POST: Place an order
 export const placeOrder = async (req, res) => {
@@ -455,5 +545,40 @@ export const getRestaurantDashboardStats = async (req, res) => {
   } catch (err) {
     console.error("Dashboard error:", err);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+export const getCategoryByName = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Category name is required.",
+      });
+    }
+
+    // Search category by name (case-insensitive)
+    const category = await Category.findOne({
+      name: { $regex: new RegExp(`^${name}$`, "i") },
+    });
+
+    if (!category) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "Category not found.",
+      });
+    }
+
+    return res.status(StatusCodes.OK).json({
+      _id: category._id,
+      name: category.name,
+      image: category.image || null,
+    });
+
+  } catch (error) {
+    console.error("Error in getCategoryByName:", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Server Error",
+      error: error.message,
+    });
   }
 };

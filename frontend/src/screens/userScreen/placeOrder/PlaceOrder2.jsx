@@ -14,6 +14,14 @@ import {
   FiTag,
 } from "react-icons/fi";
 
+// ✅ Custom Axios instance using env
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_PUBLIC_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 const PlaceOrder2 = () => {
   const navigate = useNavigate();
   const {
@@ -33,24 +41,21 @@ const PlaceOrder2 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Promo code states
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [promoError, setPromoError] = useState("");
   const [promoSuccess, setPromoSuccess] = useState("");
   const [appliedPromo, setAppliedPromo] = useState("");
 
-  // Available promo codes
   const promoCodes = {
-    HUNGRY10: 10, // 10% off
-    FOODIE20: 20, // 20% off
-    DELISH30: 30, // 30% off
-    MEGA50: 50, // 50% off (special)
+    HUNGRY10: 10,
+    FOODIE20: 20,
+    DELISH30: 30,
+    MEGA50: 50,
   };
 
   const applyPromoCode = () => {
     const code = promoCode.trim().toUpperCase();
-
     if (!code) {
       setPromoError("Please enter a promo code");
       return;
@@ -78,7 +83,6 @@ const PlaceOrder2 = () => {
     setPromoSuccess("");
   };
 
-  // Calculate discount and final total
   const discountAmount = (grand_total * discount) / 100;
   const finalTotal = grand_total - discountAmount;
 
@@ -119,18 +123,13 @@ const PlaceOrder2 = () => {
     };
 
     try {
-      const res = await axios.post(
-        "http://localhost:3000/api/v1/public/placeorder",
-        orderData
-      );
-
+      const res = await api.post("/public/placeorder", orderData);
       if (res.status === 201) {
         clearCart();
         alert("✅ Order placed successfully!");
         navigate("/thanks");
       }
     } catch (err) {
-      console.error("Order error:", err);
       setError(
         err.response?.data?.message ||
           "An error occurred while placing your order"

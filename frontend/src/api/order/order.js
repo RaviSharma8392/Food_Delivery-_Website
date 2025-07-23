@@ -1,63 +1,81 @@
+// src/api/orderApi.js
+
 import axios from 'axios';
 
-const API_URL = '/api/orders';
+// Base API URL from environment variables
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/orders`;
 
-// Create new order
+/**
+ * Generate axios config with Authorization header
+ * @param {string} token - Bearer token
+ * @returns {Object} Axios config
+ */
+const authConfig = (token) => ({
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
+/**
+ * Create a new order
+ * @param {Object} orderData - Order payload
+ * @param {string} token - User token
+ * @returns {Promise<Object>} Created order
+ */
 const createOrder = async (orderData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.post(API_URL, orderData, config);
+  const response = await axios.post(API_URL, orderData, authConfig(token));
   return response.data;
 };
 
-// Get user orders
+/**
+ * Get the current user's orders
+ * @param {string} token - User token
+ * @returns {Promise<Array>} List of orders
+ */
 const getMyOrders = async (token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.get(`${API_URL}/myorders`, config);
+  const response = await axios.get(`${API_URL}/myorders`, authConfig(token));
   return response.data;
 };
 
-// Get restaurant orders
+/**
+ * Get orders for a specific restaurant (with optional status filter)
+ * @param {string} restaurantId - Restaurant ID
+ * @param {string} status - Order status filter (e.g., "pending", "completed")
+ * @param {string} token - Admin/restaurant token
+ * @returns {Promise<Array>} List of orders
+ */
 const getRestaurantOrders = async (restaurantId, status, token) => {
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: {
-      restaurantId,
-      status,
-    },
+    ...authConfig(token),
+    params: { restaurantId, status },
   };
 
   const response = await axios.get(`${API_URL}/restaurant/${restaurantId}`, config);
   return response.data;
 };
 
-// Update order status
+/**
+ * Update the status of an order
+ * @param {string} orderId - Order ID
+ * @param {string} status - New order status
+ * @param {string} token - Admin or delivery partner token
+ * @returns {Promise<Object>} Updated order
+ */
 const updateOrderStatus = async (orderId, status, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.put(`${API_URL}/${orderId}/status`, { status }, config);
+  const response = await axios.put(
+    `${API_URL}/${orderId}/status`,
+    { status },
+    authConfig(token)
+  );
   return response.data;
 };
 
-const orderApi={
+// Export as a grouped object
+const orderApi = {
   createOrder,
   getMyOrders,
   getRestaurantOrders,
   updateOrderStatus,
-}
+};
+
 export default orderApi;

@@ -9,23 +9,23 @@ import {
   FiInfo,
 } from "react-icons/fi";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const RecentOrders = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  console.log(`${BASE_URL}/admin/orders/recent`);
 
   useEffect(() => {
     const fetchRecentOrders = async () => {
-      console.log("hi restro");
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/v1/admin/orders/recent", // No leading space
+          `${BASE_URL}/api/v1/admin/orders/recent`,
           {
             params: { limit: 10 },
           }
         );
-
-        console.log(response);
         setRecentOrders(response.data);
       } catch (err) {
         console.error("Error fetching recent orders:", err);
@@ -40,12 +40,9 @@ const RecentOrders = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await axios.patch(
-        ` http://localhost:3000/api/v1/admin/orders/${orderId}/status`,
-        {
-          status: newStatus,
-        }
-      );
+      await axios.patch(`${BASE_URL}/api/v1/admin/orders/${orderId}/status`, {
+        status: newStatus,
+      });
       setRecentOrders(
         recentOrders.map((order) =>
           order._id === orderId ? { ...order, status: newStatus } : order

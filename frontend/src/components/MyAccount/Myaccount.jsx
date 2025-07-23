@@ -1,88 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
+import { NavLink } from "react-router-dom";
+
 import useUserContext from "../../context/UserContext";
 import {
   FiUser,
   FiMail,
   FiPhone,
   FiHome,
-  FiEdit,
   FiBox,
   FiArrowLeft,
   FiClock,
   FiHeart,
   FiCreditCard,
-  FiChevronDown,
-  FiX,
 } from "react-icons/fi";
-import { NavLink, useNavigate } from "react-router-dom";
-
-// Avatar options
-const avatarOptions = [
-  {
-    id: 1,
-    url: "https://xsgames.co/randomusers/assets/avatars/male/1.jpg",
-    label: "Male 1",
-  },
-  {
-    id: 2,
-    url: "https://xsgames.co/randomusers/assets/avatars/male/2.jpg",
-    label: "Male 2",
-  },
-  {
-    id: 3,
-    url: "https://xsgames.co/randomusers/assets/avatars/male/3.jpg",
-    label: "Male 3",
-  },
-  {
-    id: 4,
-    url: "https://xsgames.co/randomusers/assets/avatars/female/1.jpg",
-    label: "Female 1",
-  },
-  {
-    id: 5,
-    url: "https://xsgames.co/randomusers/assets/avatars/female/2.jpg",
-    label: "Female 2",
-  },
-  {
-    id: 6,
-    url: "https://xsgames.co/randomusers/assets/avatars/female/3.jpg",
-    label: "Female 3",
-  },
-  {
-    id: 7,
-    url: "https://xsgames.co/randomusers/assets/avatars/pixel/1.jpg",
-    label: "Pixel 1",
-  },
-  {
-    id: 8,
-    url: "https://xsgames.co/randomusers/assets/avatars/pixel/2.jpg",
-    label: "Pixel 2",
-  },
-];
 
 export default function MyAccount() {
-  const navigate = useNavigate();
-  const { user, loading, logout, updateUser } = useUserContext();
-  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState(
-    user?.avatar || avatarOptions[0].url
-  );
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const handleAvatarChange = (avatarUrl) => {
-    setSelectedAvatar(avatarUrl);
-    setShowAvatarPicker(false);
-    // Update avatar in backend
-    updateUser({ avatar: avatarUrl });
-  };
+  const { user, loading, logout } = useUserContext();
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center mt-50  bg-white">
+      <div className="flex flex-col items-center justify-center mt-50 bg-white">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mb-4"></div>
         <p className="text-gray-600">Loading your profile...</p>
       </div>
@@ -99,11 +36,6 @@ export default function MyAccount() {
           <p className="text-gray-600 mb-6">
             Please sign in to view your account details.
           </p>
-          <button
-            onClick={() => navigate("/login")}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-lg font-medium transition-colors">
-            Go to Login
-          </button>
         </div>
       </div>
     );
@@ -114,33 +46,18 @@ export default function MyAccount() {
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-100">
         <div className="container mx-auto px-4 py-4 flex items-center">
-          <button
-            onClick={() => navigate("/")}
-            className="p-2 rounded-full hover:bg-gray-100 mr-2">
-            <FiArrowLeft size={20} className="text-gray-700" />
-          </button>
           <h1 className="text-xl font-bold text-gray-800">My Account</h1>
         </div>
       </div>
 
-      {/* Profile Section with Avatar Picker */}
-      <div className="bg-white px-6 py-8 relative">
+      {/* Profile Section */}
+      <div className="bg-white px-6 py-8">
         <div className="flex items-center">
-          <div className="relative">
-            <img
-              src={selectedAvatar}
-              alt="Profile"
-              className="w-16 h-16 rounded-full border-2 border-orange-100 object-cover"
-              onError={(e) => {
-                e.target.src = avatarOptions[0].url;
-              }}
-            />
-            <button
-              onClick={() => setShowAvatarPicker(!showAvatarPicker)}
-              className="absolute -bottom-2 -right-2 bg-white p-1 rounded-full shadow-md border border-gray-200 hover:bg-gray-50 transition-colors">
-              <FiEdit size={14} className="text-orange-500" />
-            </button>
-          </div>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAV1BMVEX6+vqPj4////+Li4u5ubn8/PyIiIiFhYWJiYnk5OShoaGnp6fT09Pn5+eRkZHu7u7Z2dn19fXCwsKamprHx8exsbHOzs7X19eurq6/v7+jo6Pe3t6WlpZaNtXmAAAE3UlEQVR4nO2d25aqOhBFsUIRbgqI4AX//zsP0fa0vUfbBoKm4ljzpfvROapIIGSFKAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIEWamG+P/vn/Owhi5Juu3XZHnp6Lblutm1PT9q5aDKRriVulEqZVBqUSr9pjxh0gyrWOlr273KL05Vh/gyDTkv+jdJIsscEemrNUP9K7oU0W+f6UD1Bz+9rs4xuEOrFSrR/15T7rJwiwjU/y8gF9l3IWoyHxKLAVHxS68AYej1qZDbyRFaIocbaYIjhNHHlajTqygIS2CUqRiquDYqHFAinS0H2S+0WUwijzYThP/KFahjDY8vUWvtIEUkeK5hkkYMz9X83rUoJsQ+pTy2YIrFcJ4ytn8EoZRRCocBEMoostVeFH0LfAUOs4dSK8kpfQ2pbOT4Gp1Et6mvHZr0vEOXPhYQ7vU0TCphRueHAXFj6bsKij95pSrOY9N/xQxktymPLgbJqKfobh3HWhGw0GyIW3d5vuLoeg5f/6j4TdpL9qwczdUoh+DYWhDuhPdpY5PFhdD2dfhboGxdC/ZkMsFZvxMtOH64+9pGnfDjWTBBR7xxT/ku08XqejpcGzTvWub6rXsLnW/EIVfhu7LGNIXMdxnRC16NjRw5FZD2as0F9xuTWU//l7hxmVNeCO/hKaI89dqdAAljBxe4wdxFRp4P7dPpc/2/zNnv5AhFT8X3uBonuE5FMG57/IT4e/VfkDldEU9hFPCyCx+T1XU+6AEzaw4TVH3gQmaZbcpisFV0DDlWkzD3K1Pa8ud0EnbBClotut3NmXUx9B2sd9B2fmZo86DjgVFTOXmr4d+fa4DLuAV4rJ9EF5TOg/fz2ACiBud/rRUiT5vPyF+eIWJ1v3hnGidGMY/566sPione00CR1U21HU9rCs2YWffP+kV8A3fPwQAAIAP7k/1WApJkwpTM/THeFmOfRYJuelhGgo13nYuTaJX3VqCI1W5awDhIUof/K+hzlkZneKY+F7Bmb4uOhXPq3DUv1rQ85t916CaHcrjtegSF51gePDWp1y/o4Q+X5y+p4RjETtPRVxiq6UlnmrovkvPFl9tusS2dTt87SNaInpgh68IBh3eJLhSWxjCcK7h265DX4afP9IsEDa0w1cUaomQkx2+olBLhJwsDT09IrqfEGFt6CkKxY17cNsOb3ujqX2Tobfj+N41mCbeUqVzT56bis+T6t4i6HN/+3va1Gde7z3zhdfd0e4H7jzHb5rN7fg5OzwfUjc3WmGPOvp9NeOW47Iy9P16jXavvf3W/o/+ovyVfeptufsO19Do34IiwmxLnO/1EP8vuQ30sttTJeWIjFcpihE0W/Jf0KhqI0fQbDmZeIz+c9JWxjV4g7lYtlN1LGGz0A+of/jBnOkoJTGMSM1iZdSdzNMhmYbzEiOObkVsZ/sVpv7PDJCdn+wcDfH+UQbIhiByQkzZQc8qpEqSWG5/3sMUlYVOJn5nRieHOpxPzfEoWXcbW0uT8oqHcPS+GH9wVXZ33wT81c18JzCP96F+DfGS5lrvt4d8oy65tTS9bJZOr/k1dc67XV1Foae8Lrv4uamqoS77frfd7nZ9X9ZZ1TQsbEe+E1+Zte+gARJsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACJP/AAFSQ7wNy+LTAAAAAElFTkSuQmCC"
+            alt="Profile"
+            className="w-16 h-16 rounded-full border-2 border-orange-100 object-cover"
+          />
           <div className="ml-4">
             <h2 className="text-xl font-bold text-gray-800">
               {user.user.name}
@@ -148,38 +65,6 @@ export default function MyAccount() {
             <p className="text-gray-600">{user.user.email}</p>
           </div>
         </div>
-
-        {/* Avatar Picker Dropdown */}
-        {showAvatarPicker && (
-          <div className="absolute left-6 top-24 z-20 bg-white rounded-lg shadow-lg border border-gray-200 w-64 p-4">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-medium text-gray-800">Choose Avatar</h3>
-              <button
-                onClick={() => setShowAvatarPicker(false)}
-                className="text-gray-400 hover:text-gray-600">
-                <FiX size={18} />
-              </button>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {avatarOptions.map((avatar) => (
-                <div
-                  key={avatar.id}
-                  onClick={() => handleAvatarChange(avatar.url)}
-                  className={`cursor-pointer p-1 rounded-full transition-all ${
-                    selectedAvatar === avatar.url
-                      ? "ring-2 ring-orange-500"
-                      : "hover:bg-gray-100"
-                  }`}>
-                  <img
-                    src={avatar.url}
-                    alt={avatar.label}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Quick Actions */}
@@ -187,49 +72,41 @@ export default function MyAccount() {
         <div className="grid grid-cols-4 gap-2 mb-6">
           <NavLink
             to="/user/history"
-            className="bg-white rounded-lg p-3 shadow-xs text-center hover:shadow-sm transition-all border border-gray-100 hover:border-orange-200">
-            <div className="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
+            className="flex flex-col items-center hover:text-orange-500 transition-colors">
+            <div className="bg-orange-100 p-3 rounded-full mb-1 hover:bg-orange-200 transition-colors">
               <FiClock size={18} className="text-orange-500" />
             </div>
-            <span className="text-xs font-medium text-gray-700">Orders</span>
+            <span className="text-xs text-gray-700 hover:text-orange-500">
+              Orders
+            </span>
           </NavLink>
-
-          <NavLink
-            to="/user/favorites"
-            className="bg-white rounded-lg p-3 shadow-xs text-center hover:shadow-sm transition-all border border-gray-100 hover:border-orange-200">
-            <div className="bg-red-100 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
+          <div className="flex flex-col items-center">
+            <div className="bg-red-100 p-3 rounded-full mb-1">
               <FiHeart size={18} className="text-red-500" />
             </div>
-            <span className="text-xs font-medium text-gray-700">Favorites</span>
-          </NavLink>
-
-          <NavLink
-            to="/user/addresses"
-            className="bg-white rounded-lg p-3 shadow-xs text-center hover:shadow-sm transition-all border border-gray-100 hover:border-orange-200">
-            <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
+            <span className="text-xs text-gray-700">Favorites</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="bg-blue-100 p-3 rounded-full mb-1">
               <FiHome size={18} className="text-blue-500" />
             </div>
-            <span className="text-xs font-medium text-gray-700">Addresses</span>
-          </NavLink>
-
-          <NavLink
-            to="/user/payments"
-            className="bg-white rounded-lg p-3 shadow-xs text-center hover:shadow-sm transition-all border border-gray-100 hover:border-orange-200">
-            <div className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2">
+            <span className="text-xs text-gray-700">Addresses</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="bg-green-100 p-3 rounded-full mb-1">
               <FiCreditCard size={18} className="text-green-500" />
             </div>
-            <span className="text-xs font-medium text-gray-700">Payments</span>
-          </NavLink>
+            <span className="text-xs text-gray-700">Payments</span>
+          </div>
         </div>
       </div>
 
       {/* Account Details */}
       <div className="container mx-auto px-4">
-        <div className="bg-white rounded-xl shadow-xs overflow-hidden mb-4 border border-gray-100">
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="font-bold text-gray-800">Account Details</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-4">
+          <div className="p-4 border-b border-gray-100 font-bold text-gray-800">
+            Account Details
           </div>
-
           <div className="divide-y divide-gray-100">
             <div className="p-4 flex items-center">
               <div className="bg-gray-100 p-2 rounded-full mr-3">
@@ -240,7 +117,6 @@ export default function MyAccount() {
                 <p className="font-medium text-gray-800">{user.user.email}</p>
               </div>
             </div>
-
             <div className="p-4 flex items-center">
               <div className="bg-gray-100 p-2 rounded-full mr-3">
                 <FiPhone size={18} className="text-gray-600" />
@@ -248,11 +124,7 @@ export default function MyAccount() {
               <div className="flex-1">
                 <p className="text-sm text-gray-500">Phone</p>
                 <p className="font-medium text-gray-800">
-                  {user.user.phoneNumber || (
-                    <button className="text-orange-500 text-sm font-medium hover:text-orange-600 transition-colors">
-                      Add phone number
-                    </button>
-                  )}
+                  {user.user.phoneNumber || "Not provided"}
                 </p>
               </div>
             </div>
@@ -260,14 +132,10 @@ export default function MyAccount() {
         </div>
 
         {/* Saved Addresses */}
-        <div className="bg-white rounded-xl shadow-xs overflow-hidden mb-4 border border-gray-100">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-4">
           <div className="p-4 border-b border-gray-100 flex justify-between items-center">
             <h3 className="font-bold text-gray-800">Saved Addresses</h3>
-            <button className="text-orange-500 text-sm font-medium hover:text-orange-600 transition-colors">
-              Add New
-            </button>
           </div>
-
           <div className="p-4">
             {user.user.address ? (
               <div className="flex items-start">
@@ -288,23 +156,19 @@ export default function MyAccount() {
         </div>
 
         {/* Food Preferences */}
-        <div className="bg-white rounded-xl shadow-xs overflow-hidden mb-4 border border-gray-100">
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="font-bold text-gray-800">Food Preferences</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-4">
+          <div className="p-4 border-b border-gray-100 font-bold text-gray-800">
+            Food Preferences
           </div>
-
           <div className="p-4">
-            <NavLink
-              to="/user/food-items"
-              className="flex items-center justify-between py-3 text-gray-800 hover:text-orange-500 transition-colors">
+            <div className="flex items-center justify-between py-3 text-gray-800">
               <div className="flex items-center">
                 <div className="bg-orange-100 p-2 rounded-full mr-3">
                   <FiBox size={16} className="text-orange-500" />
                 </div>
                 <span>Saved Food Items</span>
               </div>
-              <span className="text-gray-400">→</span>
-            </NavLink>
+            </div>
           </div>
         </div>
       </div>
@@ -312,19 +176,11 @@ export default function MyAccount() {
       {/* Logout Button */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <button
-          onClick={handleLogout}
+          onClick={logout}
           className="w-full bg-white border border-gray-300 text-red-500 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors">
           Sign Out
         </button>
       </div>
-
-      {/* Overlay for avatar picker */}
-      {showAvatarPicker && (
-        <div
-          className="fixed inset-0 z-10"
-          onClick={() => setShowAvatarPicker(false)}
-        />
-      )}
     </div>
   );
 }

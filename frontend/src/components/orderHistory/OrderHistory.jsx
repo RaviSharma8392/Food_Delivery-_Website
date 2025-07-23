@@ -3,6 +3,9 @@ import useUserContext from "../../context/UserContext";
 import { FiClock, FiCheckCircle, FiTruck, FiXCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+// ✅ Set your base API URL from environment
+const BASE_URL = import.meta.env.VITE_API_PUBLIC_URL;
+
 export default function OrderHistory() {
   const { user, loading } = useUserContext();
   const [orders, setOrders] = useState([]);
@@ -11,7 +14,7 @@ export default function OrderHistory() {
   const fetchOrderHistory = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/user/myOrders/${user.user._id}`
+        `${BASE_URL}/api/v1/user/myOrders/${user.user._id}`
       );
       const data = await response.json();
 

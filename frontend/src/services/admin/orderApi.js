@@ -1,20 +1,54 @@
+// src/api/ordersApi.js
+
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api/v1/admin/orders";
+// Base URL for admin order-related endpoints
+const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/admin/orders`;
+console.log(BASE_URL)
 
+/**
+ * Fetch recent orders for the admin dashboard
+ * @returns {Promise<Array>} List of recent orders
+ */
 export const fetchOrders = async () => {
-  const response = await axios.get(`${BASE_URL}/recent`, {
-  });
-  console.log("Fetched orders:", response.data);
-  return response.data;
+  try {
+    const response = await axios.get(`${BASE_URL}/recent`);
+    console.log("Fetched orders:", response.data); // Debug log
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    throw error.response?.data || error;
+  }
 };
 
+/**
+ * Update the status of a specific order
+ * @param {string} orderId - Order ID
+ * @param {string} newStatus - New status (e.g., 'delivered', 'cancelled')
+ * @returns {Promise<void>}
+ */
 export const updateOrderStatus = async (orderId, newStatus) => {
-  await axios.patch(`${BASE_URL}/${orderId}/status`, { status: newStatus });
+  try {
+    await axios.patch(`${BASE_URL}/${orderId}/status`, { status: newStatus });
+  } catch (error) {
+    console.error(`Error updating status for order ${orderId}:`, error);
+    throw error.response?.data || error;
+  }
 };
 
+/**
+ * Assign a delivery partner to a specific order
+ * @param {string} orderId - Order ID
+ * @param {string} partnerId - Delivery partner ID
+ * @returns {Promise<void>}
+ */
 export const assignDeliveryPartner = async (orderId, partnerId) => {
-  await axios.patch(`${BASE_URL}/${orderId}/assign`, {
-    deliveryPartner: partnerId,
-  });
+  try {
+    await axios.patch(`${BASE_URL}/${orderId}/assign`, {
+      deliveryPartner: partnerId,
+    });
+  } catch (error) {
+    console.error(`Error assigning delivery partner for order ${orderId}:`, error);
+    throw error.response?.data || error;
+  }
 };

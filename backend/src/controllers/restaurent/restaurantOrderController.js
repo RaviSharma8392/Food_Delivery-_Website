@@ -36,6 +36,22 @@ export const getRestaurantOrders = async (req, res) => {
     res.status(500).json({ message: "Error fetching orders" });
   }
 };
+// export const getCategoryByName = async (req, res) => {
+//   try {
+//     const name = req.query.name;
+//     const category = await Category.findOne({
+//       name: { $regex: new RegExp(name, "i") },
+//     });
+
+//     if (!category) {
+//       return res.status(404).json({ message: "Category not found" });
+//     }
+
+//     res.status(200).json({ category });
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
 
 // 🔁 PATCH: Update order status
 export const updateOrderStatus = async (req, res) => {

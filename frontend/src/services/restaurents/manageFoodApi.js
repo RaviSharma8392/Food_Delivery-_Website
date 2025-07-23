@@ -1,25 +1,40 @@
+// src/api/kitchenAndRestaurantApi.js
+
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api/v1/kitchen";
+// Base URLs
+const BASE_KITCHEN_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/kitchen`;
+const BASE_PUBLIC_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/public`;
+
+// Common Axios config
 const axiosConfig = { withCredentials: true };
 
-// Delete a food item by ID
+/**
+ * Delete a food item by its ID (Kitchen-side)
+ * @param {string} id - Food item ID
+ * @returns {Promise<Object>}
+ */
 export const deleteFoodItem = async (id) => {
   try {
-    const response = await axios.delete(`${BASE_URL}/deletefooditem/${id}`, axiosConfig);
+    const response = await axios.delete(`${BASE_KITCHEN_URL}/deletefooditem/${id}`, axiosConfig);
     console.log("Food item deleted:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error deleting food item:", error.response || error);
-    throw error;
+    throw error.response?.data || error;
   }
 };
 
-// Update availability of a food item
+/**
+ * Update availability status of a food item
+ * @param {string} id - Food item ID
+ * @param {boolean} isAvailable - New availability status
+ * @returns {Promise<Object>}
+ */
 export const updateFoodAvailability = async (id, isAvailable) => {
   try {
     const response = await axios.put(
-      `${BASE_URL}/updateavailability/${id}`,
+      `${BASE_KITCHEN_URL}/updateavailability/${id}`,
       { isAvailable },
       axiosConfig
     );
@@ -27,26 +42,28 @@ export const updateFoodAvailability = async (id, isAvailable) => {
     return response.data;
   } catch (error) {
     console.error("Error updating availability:", error.response || error);
-    throw error;
+    throw error.response?.data || error;
   }
 };
-// Optionally: Add more API functions here in future, like:
-// - fetchAllFoodItems()
-// - addNewFoodItem()
-// - updateFoodItemDetails()
-// src/api/restaurantApi.js
+
+/**
+ * Fetch public restaurants by city
+ * @param {string} city - City name to filter restaurants
+ * @returns {Promise<Array>} Array of restaurants
+ */
 export const fetchRestaurantsByCity = async (city) => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/v1/public/restaurants?city=${city}`
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch restaurants");
-    }
-    const data = await response.json();
-    return data?.data || [];
+    const response = await axios.get(`${BASE_PUBLIC_URL}/restaurants`, {
+      params: { city },
+    });
+console.log(response)
+    return response.data?.data || [];
   } catch (error) {
-    console.error("API Error:", error);
-    throw error;
+    console.error("Error fetching restaurants by city:", error.response || error);
+    throw error.response?.data || error;
   }
 };
+
+// 💡 Future extensions (examples):
+// export const addNewFoodItem = async (data) => { ... }
+// export const updateFoodItemDetails = async (id, data) => { ... }

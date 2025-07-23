@@ -11,6 +11,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const RestaurantPerformance = ({ timeRange }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,12 +21,13 @@ const RestaurantPerformance = ({ timeRange }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/v1/admin/analytics/restaurants",
-          { params: { period: timeRange } }
+          `${BASE_URL}/admin/analytics/restaurants`,
+          {
+            params: { period: timeRange },
+          }
         );
 
         console.log("Restaurant data:", response);
-
         setData(response.data);
       } catch (error) {
         console.error("Error fetching restaurant analytics:", error);

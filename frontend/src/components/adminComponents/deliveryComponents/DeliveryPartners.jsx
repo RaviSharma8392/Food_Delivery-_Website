@@ -4,6 +4,8 @@ import axios from "axios";
 import PartnerTable from "./PartnerTable";
 import PartnerForm from "./PartnerForm";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const DeliveryPartners = () => {
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,11 +15,7 @@ const DeliveryPartners = () => {
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/v1/admin/delivery-partners"
-        );
-        console.log(response);
-
+        const response = await axios.get(`${BASE_URL}/admin/delivery-partners`);
         setPartners(response.data);
       } catch (error) {
         console.error("Error fetching delivery partners:", error);
@@ -34,7 +32,7 @@ const DeliveryPartners = () => {
       let response;
       if (editingPartner) {
         response = await axios.put(
-          `http://localhost:3000/api/v1/admin/delivery-partners/${editingPartner._id}`,
+          `${BASE_URL}/admin/delivery-partners/${editingPartner._id}`,
           partnerData
         );
         setPartners(
@@ -44,13 +42,11 @@ const DeliveryPartners = () => {
         );
       } else {
         response = await axios.post(
-          "http://localhost:3000/api/v1/admin/delivery-partners",
+          `${BASE_URL}/admin/delivery-partners`,
           partnerData
         );
-
         setPartners([...partners, response.data]);
       }
-      console.log(response);
 
       setShowForm(false);
       setEditingPartner(null);
@@ -62,13 +58,11 @@ const DeliveryPartners = () => {
   const togglePartnerStatus = async (id, currentStatus) => {
     try {
       const response = await axios.patch(
-        `http://localhost:3000/api/v1/admin/delivery-partners/${id}/status`,
+        `${BASE_URL}/admin/delivery-partners/${id}/status`,
         {
           active: !currentStatus,
         }
       );
-      console.log(response);
-
       setPartners(partners.map((p) => (p._id === id ? response.data : p)));
     } catch (error) {
       console.error("Error toggling partner status:", error);
