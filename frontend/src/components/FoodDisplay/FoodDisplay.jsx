@@ -141,7 +141,7 @@ const FoodDisplay = ({ restaurantId }) => {
             name: restaurant.name,
             address: {
               "@type": "PostalAddress",
-              addressLocality: restaurant.location || "Unknown",
+              addressLocality: restaurant.location || "Bhimtal",
               addressRegion: "Uttarakhand",
               addressCountry: "India",
             },
@@ -194,19 +194,19 @@ const FoodDisplay = ({ restaurantId }) => {
                 <p className="text-sm text-gray-600">{restaurant.address}</p>
               </div>
             </div>
-            <div className="flex items-start">
+            {/* <div className="flex items-start">
               <FiPhone className="text-orange-500 mt-1 mr-3 flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-gray-800">Contact</h4>
                 <p className="text-sm text-gray-600">{restaurant.phone}</p>
               </div>
-            </div>
+            </div> */}
             <div className="flex items-start">
               <FiClock className="text-orange-500 mt-1 mr-3 flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-gray-800">Hours</h4>
                 <p className="text-sm text-gray-600">
-                  {restaurant.openingHours || "10:00 AM - 10:00 PM"}
+                  {restaurant.openingHours || "9:00 AM - 9:00 PM"}
                 </p>
               </div>
             </div>

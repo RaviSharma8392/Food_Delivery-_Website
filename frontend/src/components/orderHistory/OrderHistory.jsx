@@ -4,7 +4,7 @@ import { FiClock, FiCheckCircle, FiTruck, FiXCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 // ✅ Set your base API URL from environment
-const BASE_URL = import.meta.env.VITE_API_PUBLIC_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function OrderHistory() {
   const { user, loading } = useUserContext();
@@ -17,6 +17,7 @@ export default function OrderHistory() {
         `${BASE_URL}/api/v1/user/myOrders/${user.user._id}`
       );
       const data = await response.json();
+      console.log(data);
 
       if (data.success) {
         setOrders(data.orders);
@@ -44,7 +45,7 @@ export default function OrderHistory() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-20">
+    <div className="bg-gray-50 mt-10  min-h-screen pb-20">
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center">
