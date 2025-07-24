@@ -1,14 +1,25 @@
 import Order from "../../models/Order.js";
+import Restaurant from "../../models/Restaurant.js";
 import { StatusCodes } from "http-status-codes";
 
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({})
+    const userId = req.user?._id; // Logged-in restaurant owner ID
+
+    // ✅ Find the restaurant owned by this user
+    const restaurant = await Restaurant.findOne({ owner: userId });
+    if (!restaurant) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "No restaurant found for this user" });
+    }
+
+    // ✅ Now fetch only orders that belong to this restaurant
+    const orders = await Order.find({ restaurantId: restaurant._id })
       .sort({ createdAt: -1 })
       .populate("userId", "name email phoneNumber")
       .populate("items.itemId", "name options imageUrl image")
       .lean();
 
+    // Map and format orders (same as before)
     const formattedOrders = orders.map((order) => {
       let subtotal = 0;
 

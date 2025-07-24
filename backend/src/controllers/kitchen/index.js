@@ -1,5 +1,5 @@
-import {  deleteFoodItemById ,updateAvailability,addFoodItem,} from "./foodController.js";
+import {getFoodItemsByRestaurantId, getAllCategories, deleteFoodItemById ,updateAvailability,addFoodItem,} from "./foodController.js";
 import { getAllOrders,updateOrderStatus} from "./orderController.js";
 
 
-export{deleteFoodItemById,updateAvailability,addFoodItem,getAllOrders,updateOrderStatus}
+export{getFoodItemsByRestaurantId,getAllCategories,updateAvailability,addFoodItem,getAllOrders,updateOrderStatus,deleteFoodItemById}

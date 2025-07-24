@@ -18,19 +18,21 @@ const OrdersPage = () => {
   const [filters, setFilters] = useState({});
   const [restaurantOptions, setRestaurantOptions] = useState([]);
 
-  // Fetch orders once on mount
+  // Load orders once on component mount
   useEffect(() => {
     const loadOrders = async () => {
       setLoading(true);
       try {
-        const data = await fetchOrders();
+        const response = await fetchOrders();
+        const data = response?.orders || [];
         setAllOrders(data);
 
+        // Extract unique restaurant options for filtering
         const uniqueRestaurants = [
           ...new Map(
             data
-              .filter((order) => order.restaurantId)
-              .map((order) => [order.restaurantId._id, order.restaurantId])
+              .filter((order) => order.restaurant)
+              .map((order) => [order.restaurant._id, order.restaurant])
           ).values(),
         ];
         setRestaurantOptions(uniqueRestaurants);
@@ -44,28 +46,31 @@ const OrdersPage = () => {
     loadOrders();
   }, []);
 
-  // Apply filters client-side
+  // Apply client-side filters
   useEffect(() => {
     let result = [...allOrders];
 
+    // Filter by order status (pending, delivered, etc.)
     if (filters.status) {
       result = result.filter((order) => order.status === filters.status);
     }
 
+    // Filter by delivery assignment
     if (filters.deliveryStatus) {
-      if (filters.deliveryStatus === "assigned") {
-        result = result.filter((order) => order.deliveryPartner);
-      } else if (filters.deliveryStatus === "unassigned") {
-        result = result.filter((order) => !order.deliveryPartner);
-      }
+      result =
+        filters.deliveryStatus === "assigned"
+          ? result.filter((order) => order.deliveryPartner)
+          : result.filter((order) => !order.deliveryPartner);
     }
 
+    // Filter by restaurant
     if (filters.restaurantId) {
       result = result.filter(
-        (order) => order.restaurantId?._id === filters.restaurantId
+        (order) => order.restaurant?._id === filters.restaurantId
       );
     }
 
+    // Filter by date range
     if (filters.startDate && filters.endDate) {
       const start = new Date(filters.startDate);
       const end = new Date(filters.endDate);
@@ -78,6 +83,7 @@ const OrdersPage = () => {
     setFilteredOrders(result);
   }, [filters, allOrders]);
 
+  // Handle status change (e.g., delivered, cancelled)
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
       await updateOrderStatus(orderId, newStatus);
@@ -91,6 +97,7 @@ const OrdersPage = () => {
     }
   };
 
+  // Handle delivery partner assignment
   const handleAssignDelivery = async (orderId, partnerId) => {
     try {
       await assignDeliveryPartner(orderId, partnerId);
@@ -99,7 +106,7 @@ const OrdersPage = () => {
           order._id === orderId
             ? {
                 ...order,
-                deliveryPartner: partnerId,
+                deliveryPartner: { _id: partnerId }, // optional: populate more
                 status: "out_for_delivery",
               }
             : order
@@ -113,6 +120,7 @@ const OrdersPage = () => {
 
   return (
     <div className="space-y-4">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Order Management</h1>
         <button
@@ -122,12 +130,14 @@ const OrdersPage = () => {
         </button>
       </div>
 
+      {/* Filters */}
       <OrderFilters
         filters={filters}
         setFilters={setFilters}
         restaurantOptions={restaurantOptions}
       />
 
+      {/* Table or loader */}
       {loading ? (
         <div className="text-center py-8">Loading orders...</div>
       ) : (
@@ -141,6 +151,7 @@ const OrdersPage = () => {
         />
       )}
 
+      {/* Assign modal */}
       {showAssignModal && (
         <AssignDeliveryModal
           order={selectedOrder}

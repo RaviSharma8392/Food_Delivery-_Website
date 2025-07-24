@@ -9,10 +9,13 @@ import {
   FiBell,
   FiActivity,
 } from "react-icons/fi";
+import useUserContext from "../../src/context/UserContext";
 
 const SystemLayout = () => {
   const location = useLocation();
-
+  const data = useUserContext();
+  const user = data.user;
+  console.log(data);
   const navItems = [
     { path: "/admin/dashboard", icon: <FiHome />, label: "Dashboard" },
     { path: "/admin/orders", icon: <FiShoppingBag />, label: "Orders" },
@@ -71,8 +74,8 @@ const SystemLayout = () => {
               <span>A</span>
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium">Admin User</p>
-              <p className="text-xs text-gray-500">admin@fooddash.com</p>
+              <p className="text-sm font-medium">{user.user.name}</p>
+              <p className="text-xs text-gray-500">{user.user.email}</p>
             </div>
           </div>
         </div>

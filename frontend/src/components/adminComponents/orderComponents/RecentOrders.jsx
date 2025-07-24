@@ -15,18 +15,21 @@ const RecentOrders = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log(`${BASE_URL}/admin/orders/recent`);
 
   useEffect(() => {
     const fetchRecentOrders = async () => {
       try {
         const response = await axios.get(
           `${BASE_URL}/api/v1/admin/orders/recent`,
-          {
-            params: { limit: 10 },
-          }
+          { params: { limit: 10 } }
         );
-        setRecentOrders(response.data);
+
+        // Check if the response is wrapped in an object
+        const data = Array.isArray(response.data)
+          ? response.data
+          : response.data.orders || [];
+
+        setRecentOrders(data);
       } catch (err) {
         console.error("Error fetching recent orders:", err);
         setError("Failed to load recent orders");
@@ -43,8 +46,8 @@ const RecentOrders = () => {
       await axios.patch(`${BASE_URL}/api/v1/admin/orders/${orderId}/status`, {
         status: newStatus,
       });
-      setRecentOrders(
-        recentOrders.map((order) =>
+      setRecentOrders((prev) =>
+        prev.map((order) =>
           order._id === orderId ? { ...order, status: newStatus } : order
         )
       );
@@ -122,17 +125,19 @@ const RecentOrders = () => {
                       {order.status.replace(/_/g, " ")}
                     </span>
                   </div>
+
                   <div className="text-sm text-gray-500 mt-1">
-                    {order.userId?.name || order.name} •{" "}
-                    {order.restaurantId?.name || "Restaurant"}
+                    {order.user?.name || "Guest"} •{" "}
+                    {order.restaurant?.name || "Restaurant"}
                   </div>
+
                   <div className="text-sm mt-1">
                     ₹{order.totalAmount} •{" "}
                     {format(new Date(order.createdAt), "MMM d, h:mm a")}
                   </div>
                 </div>
 
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 items-center">
                   {getStatusIcon(order.status)}
                   {order.status === "pending" && (
                     <button
@@ -164,9 +169,9 @@ const RecentOrders = () => {
                 <div className="mt-2 text-sm text-gray-600">
                   <div className="font-medium">Items:</div>
                   <ul className="list-disc list-inside">
-                    {order.items.slice(0, 2).map((item) => (
-                      <li key={item._id}>
-                        {item.quantity}x {item.itemId?.name || "Item"} (
+                    {order.items.slice(0, 2).map((item, idx) => (
+                      <li key={idx}>
+                        {item.quantity}x {item.item?.name || "Item"} (
                         {item.portion})
                       </li>
                     ))}

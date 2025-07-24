@@ -1,7 +1,7 @@
 import express from "express";
 import { publicCtrl } from "../../controllers/index.js";
 
-import { getRestaurantOrders } from "../../controllers/restaurent/restaurantOrderController.js";
+// import { getRestaurantOrders } from "../../controllers/restaurent/restaurantOrderController.js";
 
 // console.log("getCategoryByName loaded?", typeof publicCtrl.getCategoryByName); // should be "function"
 // console.log("getRestaurantsByLocationAndCategory:", typeof publicCtrl.getRestaurantsByLocationAndCategory);
@@ -14,7 +14,7 @@ const publicRouter = express.Router();
  */
 
 // ✔ Get restaurant orders (admin or owner use case)
-publicRouter.get("/orders", getRestaurantOrders);
+// publicRouter.get("/orders", getRestaurantOrders);
 
 // ✔ Place a new order
 publicRouter.post("/placeorder", publicCtrl.placeOrder);

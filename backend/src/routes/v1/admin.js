@@ -43,6 +43,7 @@ import {
   getAllUsersWithOrders,
 } from '../../controllers/system/index.js';
 import { publicCtrl } from '../../controllers/index.js';
+import { getOwners } from '../../controllers/system/restaurantController.js';
 
 // ================================
 // 📦 ORDER ROUTES
@@ -79,6 +80,8 @@ adminRouter.put('/restaurants/:id', updateRestaurant);
 adminRouter.patch('/restaurants/:id/status', toggleRestaurantStatus);
 adminRouter.delete('/restaurants/:id', deleteRestaurant);
 adminRouter.get('/analytics/restaurants', getRestaurantPerformance);
+// routes/userRoutes.js
+adminRouter.get("/owners", getOwners);
 
 // ================================
 // 📊 ANALYTICS ROUTES
@@ -93,13 +96,13 @@ adminRouter.get('/analytics/monthly-sales-online', getMonthlySalesOnline);
 adminRouter.get('/users', getAllUsersWithOrders);
 
 
-// for category
+
+// for creating new categotry by admin
 adminRouter.post("/category/add", publicCtrl.addCategory);
 
-// ================================
-// ⚙️ SYSTEM STATS
-// ================================
-adminRouter.get('/system/stats', getSystemStats);
-adminRouter.get('/system/platform-earnings', getPlatformEarnings);
+
+
+// adminRouter.get('/system/stats', getSystemStats);
+// adminRouter.get('/system/platform-earnings', getPlatformEarnings);
 
 export default adminRouter;

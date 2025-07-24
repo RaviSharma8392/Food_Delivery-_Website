@@ -22,21 +22,63 @@ export const getOrderDetails = async (req, res) => {
   }
 };
 
+
 export const getRecentOrders = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
-    const orders = await Order.find()
+
+    // Fetch recent orders with key populations
+    const rawOrders = await Order.find()
       .sort({ createdAt: -1 })
       .limit(limit)
-      .populate('restaurantId', 'name')
-      .populate('deliveryPartner', 'name');
+      .populate("restaurantId", "name logo")
+      .populate("deliveryPartner", "name phone")
+      .populate("items.itemId") // full food item details
+      .populate("userId", "name email phone"); // only when userId exists
 
-    res.json(orders);
+    // Process each order to ensure user info is available even if userId is null
+    const orders = rawOrders.map((order) => {
+      const user = order.userId
+        ? {
+            _id: order.userId._id,
+            name: order.userId.name,
+            email: order.userId.email,
+            phone: order.userId.phone,
+          }
+        : {
+            name: order.name,
+            email: order.email,
+            phone: order.phone,
+          };
+
+      return {
+        _id: order._id,
+        user, // unified user object
+        address: order.address,
+        method: order.method,
+        status: order.status,
+        subtotal: order.subtotal,
+        deliveryFee: order.deliveryFee,
+        totalAmount: order.totalAmount,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+        restaurant: order.restaurantId,
+        deliveryPartner: order.deliveryPartner || null,
+        items: order.items.map((i) => ({
+          item: i.itemId,
+          quantity: i.quantity,
+          portion: i.portion,
+        })),
+      };
+    });
+
+    res.json({ success: true, count: orders.length, orders });
   } catch (error) {
-    console.error('Error fetching recent orders:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching recent orders:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 
 // Get all orders with filters
 

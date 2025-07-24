@@ -1,329 +1,305 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import { fetchFoodList } from "../../../api/publicApi/foodItem";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast, Toaster } from "react-hot-toast";
 
-// export default function AddItems() {
-//   const host = "http://localhost:3000";
+// Axios base URL from .env
+const host = import.meta.env.VITE_API_BASE_URL;
 
-//   const [categories, setCategories] = useState([]);
-//   const [preview, setPreview] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const [activeInput, setActiveInput] = useState("option");
+export default function AddItems() {
+  const [categories, setCategories] = useState([]);
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [activeInput, setActiveInput] = useState("option");
 
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     description: "",
-//     category: "",
-//     imageUrl: "",
-//     isAvailable: true,
-//     options: { Half: "", Full: "" },
-//     one: "",
-//   });
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    category: "",
+    imageUrl: "",
+    isAvailable: true,
+    options: { Half: "", Full: "" },
+    portion: "",
+  });
 
-//   useEffect(() => {
-//     async function fetchCategories() {
-//       try {
-//         const response = await fetchFoodList();
-//         console.log(response);
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await axios.get(`${host}/api/v1/kitchen/categories`);
+        setCategories(response.data.categories);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+        toast.error("Failed to fetch categories");
+      }
+    }
+    fetchCategories();
+  }, []);
 
-//         setCategories(response.foodCategories);
-//       } catch (err) {
-//         console.error("Failed to fetch categories", err);
-//         alert("Failed to fetch categories");
-//       }
-//     }
-//     fetchCategories();
-//   }, [host]);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
 
-//   const handleChange = (e) => {
-//     const { name, value, type, checked } = e.target;
+    if (name === "Half" || name === "Full") {
+      setFormData((prev) => ({
+        ...prev,
+        options: { ...prev.options, [name]: value },
+      }));
+    } else if (name === "isAvailable") {
+      setFormData((prev) => ({
+        ...prev,
+        isAvailable: checked,
+      }));
+    } else if (name === "imageUrl") {
+      setFormData((prev) => ({ ...prev, imageUrl: value }));
+      setPreview(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
-//     if (name === "Half" || name === "Full") {
-//       setFormData((prev) => ({
-//         ...prev,
-//         options: { ...prev.options, [name]: value },
-//       }));
-//     } else if (name === "isAvailable") {
-//       setFormData((prev) => ({
-//         ...prev,
-//         isAvailable: checked,
-//       }));
-//     } else if (name === "imageUrl") {
-//       setFormData((prev) => ({
-//         ...prev,
-//         imageUrl: value,
-//       }));
-//       setPreview(value);
-//     } else {
-//       setFormData((prev) => ({
-//         ...prev,
-//         [name]: value,
-//       }));
-//     }
-//   };
+  const buildPayload = () => {
+    const {
+      name,
+      description,
+      category,
+      imageUrl,
+      isAvailable,
+      options,
+      portion,
+    } = formData;
 
-//   const buildPayload = () => {
-//     const {
-//       name,
-//       description,
-//       category,
-//       imageUrl,
-//       isAvailable,
-//       options,
-//       portion,
-//     } = formData;
+    if (!name.trim() || !category.trim()) {
+      throw new Error("Name and category are required.");
+    }
 
-//     if (!name.trim() || !category.trim()) {
-//       throw new Error("Name and category are required.");
-//     }
+    const payload = {
+      name: name.trim(),
+      description: description.trim(),
+      category,
+      isAvailable,
+      imageUrl: imageUrl.trim(),
+    };
 
-//     const payload = {
-//       name: name.trim(),
-//       description: description.trim(),
-//       category,
-//       isAvailable,
-//       imageUrl: imageUrl.trim(),
-//     };
+    if (activeInput === "portion") {
+      if (!portion.trim()) {
+        throw new Error("Portion price is required.");
+      }
+      payload.options = [{ size: "One", price: Number(portion.trim()) }];
+    } else {
+      const cleanedOptions = [];
+      Object.entries(options).forEach(([key, val]) => {
+        if (val.trim()) {
+          cleanedOptions.push({ size: key, price: Number(val.trim()) });
+        }
+      });
 
-//     if (activeInput === "portion") {
-//       if (!portion.trim()) {
-//         throw new Error("Portion price is required.");
-//       }
-//       payload.options = { One: portion.trim() };
-//     } else {
-//       const cleanedOptions = {};
-//       Object.entries(options).forEach(([key, val]) => {
-//         if (val.trim()) cleanedOptions[key] = val.trim();
-//       });
-//       if (Object.keys(cleanedOptions).length === 0) {
-//         throw new Error("At least one option price (Half/Full) is required.");
-//       }
-//       payload.options = cleanedOptions;
-//     }
+      if (cleanedOptions.length === 0) {
+        throw new Error("At least one option price (Half/Full) is required.");
+      }
 
-//     return payload;
-//   };
-//   // this id for submiting data
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
+      payload.options = cleanedOptions;
+    }
 
-//     try {
-//       const payload = buildPayload();
+    return payload;
+  };
 
-//       await axios.post(`${host}/api/v1/kitchen/addfooditem`, payload, {
-//         withCredentials: true,
-//         headers: { "Content-Type": "application/json" },
-//       });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const toastId = toast.loading("Adding item...");
 
-//       alert("✅ Item added successfully!");
+    try {
+      const payload = buildPayload();
 
-//       setFormData({
-//         name: "",
-//         description: "",
-//         category: "",
-//         imageUrl: "",
-//         isAvailable: true,
-//         options: { Half: "", Full: "" },
-//         portion: "",
-//       });
-//       setPreview(null);
-//       setActiveInput("option");
-//     } catch (err) {
-//       const message =
-//         err.response?.data?.message ||
-//         err.message ||
-//         "Something went wrong. Check inputs.";
-//       alert("❌ Failed to add item: " + message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+      await axios.post(`${host}/api/v1/kitchen/addfooditem`, payload, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      });
 
-//   const containerStyle = {
-//     maxWidth: "600px",
-//     margin: "40px auto",
-//     padding: "20px",
-//     boxShadow: "0 0 10px #ccc",
-//     borderRadius: "8px",
-//     backgroundColor: "#fff",
-//   };
+      toast.success("Item added successfully!", { id: toastId });
+      setFormData({
+        name: "",
+        description: "",
+        category: "",
+        imageUrl: "",
+        isAvailable: true,
+        options: { Half: "", Full: "" },
+        portion: "",
+      });
+      setPreview(null);
+      setActiveInput("option");
+    } catch (err) {
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong. Check inputs.";
+      toast.error(`Failed to add item: ${message}`, { id: toastId });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-//   const labelStyle = {
-//     display: "block",
-//     marginBottom: "6px",
-//     fontWeight: "600",
-//   };
+  return (
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
 
-//   const inputStyle = {
-//     width: "100%",
-//     padding: "8px",
-//     marginBottom: "15px",
-//     border: "1px solid #ccc",
-//     borderRadius: "4px",
-//     boxSizing: "border-box",
-//   };
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Add New Menu Item
+          </h2>
+          <p className="text-gray-500 mt-1">Fill in the details below</p>
+        </div>
 
-//   const checkboxContainer = {
-//     display: "flex",
-//     alignItems: "center",
-//     marginBottom: "15px",
-//   };
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Food Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Enter food name"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+          </div>
 
-//   const buttonStyle = {
-//     width: "100%",
-//     padding: "10px",
-//     backgroundColor: "#2563eb",
-//     border: "none",
-//     borderRadius: "6px",
-//     color: "#fff",
-//     fontWeight: "600",
-//     cursor: loading ? "not-allowed" : "pointer",
-//   };
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Category
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-//   const toggleButtonStyle = (active) => ({
-//     padding: "0.5rem 1rem",
-//     backgroundColor: active ? "#4F46E5" : "#a5b4fc",
-//     color: "white",
-//     border: "none",
-//     borderRadius: "6px",
-//     cursor: "pointer",
-//     flex: 1,
-//   });
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Image URL
+            </label>
+            <input
+              type="text"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              placeholder="Enter image URL"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+          </div>
 
-//   return (
-//     <form onSubmit={handleSubmit} style={containerStyle}>
-//       <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
-//         Add Food Item
-//       </h2>
+          {preview && (
+            <div className="flex justify-center">
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-full h-48 object-cover rounded-lg border border-gray-200"
+              />
+            </div>
+          )}
 
-//       <label style={labelStyle}>Food Name</label>
-//       <input
-//         type="text"
-//         name="name"
-//         value={formData.name}
-//         onChange={handleChange}
-//         required
-//         placeholder="Enter food name"
-//         style={inputStyle}
-//       />
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => setActiveInput("option")}
+              className={`flex-1 py-2 rounded-lg font-medium transition ${
+                activeInput === "option"
+                  ? "bg-orange-500 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}>
+              Options
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveInput("portion")}
+              className={`flex-1 py-2 rounded-lg font-medium transition ${
+                activeInput === "portion"
+                  ? "bg-orange-500 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}>
+              Portion
+            </button>
+          </div>
 
-//       <label style={labelStyle}>Description</label>
-//       <textarea
-//         name="description"
-//         value={formData.description}
-//         onChange={handleChange}
-//         required
-//         rows={3}
-//         placeholder="Enter description"
-//         style={inputStyle}
-//       />
+          {activeInput === "option" && (
+            <div className="space-y-2">
+              <input
+                type="number"
+                name="Half"
+                value={formData.options.Half}
+                onChange={handleChange}
+                placeholder="Half price"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+              <input
+                type="number"
+                name="Full"
+                value={formData.options.Full}
+                onChange={handleChange}
+                placeholder="Full price"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+          )}
 
-//       <label style={labelStyle}>Category</label>
-//       <select
-//         name="category"
-//         value={formData.category}
-//         onChange={handleChange}
-//         required
-//         style={inputStyle}>
-//         <option value="">Select a category</option>
-//         {categories.map((cat) => (
-//           <option key={cat._id} value={cat._id}>
-//             {cat.name}
-//           </option>
-//         ))}
-//       </select>
+          {activeInput === "portion" && (
+            <div>
+              <input
+                type="number"
+                name="portion"
+                value={formData.portion}
+                onChange={handleChange}
+                placeholder="Price for Portion"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+          )}
 
-//       <label style={labelStyle}>Image URL</label>
-//       <input
-//         type="text"
-//         name="imageUrl"
-//         value={formData.imageUrl}
-//         onChange={handleChange}
-//         placeholder="Enter image URL"
-//         style={inputStyle}
-//       />
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="isAvailable"
+              checked={formData.isAvailable}
+              onChange={handleChange}
+              id="availableCheckbox"
+              className="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-300 rounded"
+            />
+            <label
+              htmlFor="availableCheckbox"
+              className="ml-2 block text-sm text-gray-700">
+              Available
+            </label>
+          </div>
 
-//       {preview && (
-//         <img
-//           src={preview}
-//           alt="Preview"
-//           style={{
-//             width: "100%",
-//             height: "200px",
-//             objectFit: "cover",
-//             borderRadius: "6px",
-//             marginBottom: "15px",
-//           }}
-//         />
-//       )}
-
-//       <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
-//         <button
-//           type="button"
-//           onClick={() => setActiveInput("option")}
-//           style={toggleButtonStyle(activeInput === "option")}>
-//           Options
-//         </button>
-
-//         <button
-//           type="button"
-//           onClick={() => setActiveInput("portion")}
-//           style={toggleButtonStyle(activeInput === "portion")}>
-//           Portion
-//         </button>
-//       </div>
-
-//       {activeInput === "option" && (
-//         <div style={{ marginBottom: "15px" }}>
-//           <input
-//             type="text"
-//             name="Half"
-//             value={formData.options.Half}
-//             onChange={handleChange}
-//             placeholder="Half price"
-//             style={{ ...inputStyle, marginBottom: "10px" }}
-//           />
-//           <input
-//             type="text"
-//             name="Full"
-//             value={formData.options.Full}
-//             onChange={handleChange}
-//             placeholder="Full price"
-//             style={inputStyle}
-//           />
-//         </div>
-//       )}
-
-//       {activeInput === "portion" && (
-//         <div style={{ marginBottom: "15px" }}>
-//           <input
-//             type="text"
-//             name="portion"
-//             value={formData.portion}
-//             onChange={handleChange}
-//             placeholder="Price for Portion"
-//             style={inputStyle}
-//           />
-//         </div>
-//       )}
-
-//       <div style={checkboxContainer}>
-//         <input
-//           type="checkbox"
-//           name="isAvailable"
-//           checked={formData.isAvailable}
-//           onChange={handleChange}
-//           id="availableCheckbox"
-//         />
-//         <label htmlFor="availableCheckbox" style={{ marginLeft: "8px" }}>
-//           Available
-//         </label>
-//       </div>
-
-//       <button type="submit" disabled={loading} style={buttonStyle}>
-//         {loading ? "Adding..." : "Add Item"}
-//       </button>
-//     </form>
-//   );
-// }
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 px-4 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}>
+            {loading ? "Adding..." : "Add Item"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

@@ -8,12 +8,14 @@ const AssignDeliveryModal = ({ order, onClose, onAssign }) => {
   const [selectedPartner, setSelectedPartner] = useState("");
   const [error, setError] = useState(null);
 
+  const baseURL = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
   useEffect(() => {
     const fetchAvailablePartners = async () => {
       try {
         const response = await axios.get(
-          "/api/admin/delivery-partners/available"
+          `${baseURL}/admin/delivery-partners/available`
         );
+        console.log(response);
         setDeliveryPartners(response.data);
         if (response.data.length > 0) {
           setSelectedPartner(response.data[0]._id);

@@ -295,7 +295,7 @@ export const createRestaurant = async (req, res) => {
       email,
       mainLocation,
       subLocation,
-      owner,
+      owner, // userId
       cuisine,
       avgRating,
       totalRatings,
@@ -305,6 +305,7 @@ export const createRestaurant = async (req, res) => {
       promoted,
     } = req.body;
 
+    // Validate required fields
     if (!name || !mainLocation || !subLocation || !owner || !cuisine) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
@@ -313,6 +314,7 @@ export const createRestaurant = async (req, res) => {
       });
     }
 
+    // Check if restaurant already exists
     const existing = await Restaurant.findOne({ name });
     if (existing) {
       return res.status(StatusCodes.CONFLICT).json({
@@ -321,6 +323,16 @@ export const createRestaurant = async (req, res) => {
       });
     }
 
+    // ✅ Validate owner user exists
+    const ownerUser = await User.findById(owner);
+    if (!ownerUser) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Owner user not found",
+      });
+    }
+
+    // Create new restaurant
     const newRestaurant = new Restaurant({
       name,
       logo,

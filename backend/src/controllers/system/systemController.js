@@ -215,7 +215,7 @@ export const getAllOrders = async (req, res) => {
 
 
 
-// Get all users with their orders (for admin dashboard)
+// Get all users with their orders (for admin dashboard)(managing order page)
 export const getAllUsersWithOrders = async (req, res) => {
   try {
     // Get all users

@@ -62,10 +62,10 @@ const restaurantSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  active: {
-    type: Boolean,
-    default: true, // ✅ Added field
-  },
+ active: {
+  type: Boolean,
+  default: true,
+},
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

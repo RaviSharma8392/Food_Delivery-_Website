@@ -9,6 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CategoryItemsPage from "./pages/userPages/Category";
 import AddCategory from "./components/adminComponents/Category/AddCategory";
+import OrderForRestaurents from "./screens/kitchenScreen/kitchenDashBoard/RestaurentDashboard";
+import RestaurentDashboard from "./screens/kitchenScreen/kitchenDashBoard/RestaurentDashboard";
 
 // Layouts
 const UserLayout = lazy(() => import("./layouts/UserLayout"));
@@ -58,7 +60,7 @@ const Signup = lazy(() => import("./components/signUp/Signup"));
 
 // Kitchen Pages
 const KitchenDashboard = lazy(() =>
-  import("./screens/kitchenScreen/kitchenDashBoard/KitchenDashboard")
+  import("./screens/kitchenScreen/kitchenDashBoard/RestaurentDashboard")
 );
 const AddItems = lazy(() => import("./screens/kitchenScreen/addItems/AddItem"));
 const DeleteItems = lazy(() => import("./components/DeleteItem/DeleteItem"));
@@ -139,7 +141,7 @@ const FoodDeliveryLoader = () => {
       </p>
 
       {/* CSS Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes deliveryScooter {
           0% {
             transform: translateX(-100px);
@@ -191,7 +193,7 @@ const App = () => {
   const isLoggedIn = !!user;
   const [isLoading, setIsLoading] = useState(true);
 
-  const hideNavAndFooterPaths = ["/admin", "/restaurent"];
+  const hideNavAndFooterPaths = ["/admin", "/kitchen"];
   const shouldShowNavAndFooter = !hideNavAndFooterPaths.some((path) =>
     location.pathname.startsWith(path)
   );
@@ -233,8 +235,8 @@ const App = () => {
 
           <Routes>
             {/* Public Pages */}
-            <Route path="/new" element={<RestaurantsPageLists />} />
-            <Route path="/app" element={<DashboardPage />} />
+            {/* <Route path="/new" element={<RestaurantsPageLists />} />
+            <Route path="/app" element={<DashboardPage />} /> */}
 
             {/* User layout and routes */}
             <Route path="/" element={<UserLayout />}>
@@ -265,8 +267,16 @@ const App = () => {
             </Route>
 
             {/* Protected kitchen routes */}
-            <Route path="/restaurent" element={<RestaurentLayout />}>
-              <Route path="orders" element={<RestaurantOrders />} />
+
+            {/* replace restaurents to kitchen because some route problem */}
+            <Route element={<ProtectRoute allowedRole="Restaurent" />}>
+              <Route path="/kitchen" element={<RestaurentLayout />}>
+                <Route index element={<RestaurentDashboard />} />
+                <Route path="dashboard" element={<RestaurentDashboard />} />
+                <Route path="addItems" element={<AddItems />} />
+                <Route path="manageItems" element={<DeleteItems />} />
+                <Route path="settings" element={<OrderHistory />} />
+              </Route>
             </Route>
 
             {/* Admin routes */}

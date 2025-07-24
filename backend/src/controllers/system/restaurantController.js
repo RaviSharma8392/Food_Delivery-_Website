@@ -7,6 +7,15 @@ import FoodItem from '../../models/FoodItem.js'; // ensure you have this
 // ─────────────────────────────────────────────
 // 📊 ANALYTICS
 // ─────────────────────────────────────────────
+// controllers/userController.js
+export const getOwners = async (req, res) => {
+  try {
+    const owners = await User.find({ role: "Restaurent" }).select("_id name email");
+    res.json(owners);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch owners" });
+  }
+};
 
 export const getRestaurantPerformance = async (req, res) => {
   try {

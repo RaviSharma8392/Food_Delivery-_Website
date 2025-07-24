@@ -14,7 +14,7 @@ import "./RestaurantOrders.css";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 console.log(BASE_URL);
-
+console.log("why are you calling me");
 const RestaurantOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +70,8 @@ const RestaurantOrders = () => {
       const { data } = await axios.get(`${BASE_URL}/api/v1/public/orders`, {
         withCredentials: true,
       });
-      console.log(data);
+
+      console.log("hi here is admin data" + data);
       setOrders(data.orders || []);
     } catch (error) {
       toast.error("Failed to fetch orders");
