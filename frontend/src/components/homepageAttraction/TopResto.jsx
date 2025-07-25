@@ -63,6 +63,7 @@ const TopRestaurantsBhimtal = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/`;
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -70,7 +71,7 @@ const TopRestaurantsBhimtal = () => {
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/v1/restaurants/by-location/${location}`
+          `${BASE_URL}restaurants/by-location/${location}`
         );
         const data = await res.json();
 

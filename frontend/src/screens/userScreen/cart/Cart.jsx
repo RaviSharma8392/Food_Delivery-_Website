@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useCartContext } from "../../../context/cartContext";
 import { useNavigate } from "react-router-dom";
 import useUserContext from "../../../context/UserContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Cart = () => {
   const { user } = useUserContext();
@@ -39,7 +41,10 @@ const Cart = () => {
   const [showPopup, setShowPopup] = useState(false);
 
   const handleProceed = () => {
-    if (subtotal === 0) return;
+    if (subtotal < 299) {
+      toast.error("Minimum order value is ₹299 to place order");
+      return;
+    }
 
     if (user) {
       navigate("/user/placeorder");

@@ -56,7 +56,7 @@ export const fetchRestaurantsByCity = async (city) => {
     const response = await axios.get(`${BASE_PUBLIC_URL}/restaurants`, {
       params: { city },
     });
-console.log(response)
+// console.log(response)
     return response.data?.data || [];
   } catch (error) {
     console.error("Error fetching restaurants by city:", error.response || error);

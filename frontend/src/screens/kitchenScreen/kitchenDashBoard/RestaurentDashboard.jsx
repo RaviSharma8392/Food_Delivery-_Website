@@ -58,6 +58,7 @@ const RestaurantDashboard = () => {
     try {
       setLoading(true);
       const { data } = await axios.get("/kitchen/orders");
+      // console.log(data);
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -145,6 +146,9 @@ const RestaurantDashboard = () => {
           {filteredOrders.map((order) => {
             const deliveryFee = order.deliveryFee || 50;
             const subtotal = order.totalAmount - deliveryFee;
+            const commission = subtotal * 0.2;
+            const subtotalAfterCommission = subtotal - commission;
+            const total = subtotalAfterCommission + deliveryFee + commission;
             const status = statusConfig[order.status];
 
             return (
@@ -197,8 +201,16 @@ const RestaurantDashboard = () => {
                 {/* Order Summary */}
                 <div className="text-sm text-gray-700 mt-4 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Subtotal:</span>
-                    <span>₹{subtotal}</span>
+                    <span className="text-gray-500">Commission (20%):</span>
+                    <span className="text-red-600">
+                      ₹{commission.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">
+                      Subtotal (after commission):
+                    </span>
+                    <span>₹{subtotalAfterCommission.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Delivery Fee:</span>
@@ -206,9 +218,7 @@ const RestaurantDashboard = () => {
                   </div>
                   <div className="flex justify-between font-semibold border-t pt-2 mt-1">
                     <span>Total:</span>
-                    <span className="text-orange-600">
-                      ₹{order.totalAmount}
-                    </span>
+                    <span className="text-orange-600">₹{total.toFixed(2)}</span>
                   </div>
                 </div>
 

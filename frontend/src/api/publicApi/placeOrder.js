@@ -22,7 +22,7 @@ const placeOrderAPI = async (orderData, token) => {
       },
     }
   );
-  console.log(response.data)
+  // console.log(response.data)
   return response.data;
 };
 

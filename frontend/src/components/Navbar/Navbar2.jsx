@@ -48,11 +48,14 @@ const Navbar2 = ({ isLoggedIn }) => {
             <IoRestaurantOutline className="text-2xl sm:text-3xl text-orange-600 group-hover:rotate-12 transition-transform" />
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-bold text-orange-800 group-hover:text-orange-600 transition-colors">
-                Savory<span className="text-amber-500">Bites</span>
+                MUNCHIZA
               </span>
             </div>
           </Link>
         </div>
+        {/* <div>
+          <img className="h-20" src="/favicon.ico.png" alt="MUNCHIZA" />
+        </div> */}
 
         {/* Mobile Account Button - Only shown on mobile */}
         <div className="md:hidden flex items-center">
