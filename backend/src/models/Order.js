@@ -87,6 +87,16 @@ const OrderSchema = new mongoose.Schema(
       ref: "DeliveryPartner", // 👈 Ensure this matches your model name exactly
       required: false,
     },
+     promoCode: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      maxlength: [20, "Promo code cannot exceed 20 characters"]
+    },    discountAmount: {
+      type: Number,
+      min: [0, "Discount cannot be negative"],
+      default: 0
+    },
   },
   { timestamps: true }
 );

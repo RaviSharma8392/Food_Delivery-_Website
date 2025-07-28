@@ -23,7 +23,7 @@ const RestaurantStatus = () => {
         const response = await axios.get(
           `${BASE_URL}/api/v1/admin/restaurants/stats`
         );
-        console.log(response);
+        // console.log(response);
         setRestaurantStats(response.data);
       } catch (err) {
         console.error("Error fetching restaurant stats:", err);

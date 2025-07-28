@@ -15,7 +15,7 @@ const AdminRestaurantsPage = () => {
   const [showFormModal, setShowFormModal] = useState(false);
   const [editingRestaurant, setEditingRestaurant] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  console.log("hi admin it's your restaurent route");
+  // console.log("hi admin it's your restaurent route");
   useEffect(() => {
     const loadRestaurants = async () => {
       try {

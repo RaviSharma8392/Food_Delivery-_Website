@@ -15,7 +15,7 @@ const AssignDeliveryModal = ({ order, onClose, onAssign }) => {
         const response = await axios.get(
           `${baseURL}/admin/delivery-partners/available`
         );
-        console.log(response);
+        // console.log(response);
         setDeliveryPartners(response.data);
         if (response.data.length > 0) {
           setSelectedPartner(response.data[0]._id);

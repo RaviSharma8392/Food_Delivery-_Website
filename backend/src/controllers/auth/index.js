@@ -1,3 +1,3 @@
 
-export { loginUser, registerUser } from "./authController.js";
+export { loginUser, registerUser,resetPassword,forgotPassword } from "./authController.js";
 

@@ -27,7 +27,7 @@ const RestaurantPerformance = ({ timeRange }) => {
           }
         );
 
-        console.log("Restaurant data:", response);
+        // console.log("Restaurant data:", response);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching restaurant analytics:", error);

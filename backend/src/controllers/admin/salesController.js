@@ -35,7 +35,7 @@ const getSalesReport = async (req, res) => {
       if (order.method === "cash") cash += order.totalAmount;
       else online += order.totalAmount;
     });
-    console.log(cash, online)
+    // console.log(cash, online)
 
     res.json({ success: true, cash, online });
   } catch (err) {

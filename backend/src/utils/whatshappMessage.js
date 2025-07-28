@@ -23,7 +23,7 @@ const sendEmailNotification = async (order) => {
       method,
       subtotal,
       deliveryFee,
-      totalAmount,
+      totalAmount,promoCode,
       items,
     } = order;
 
@@ -64,6 +64,7 @@ Phone: ${phoneNumber}
 Email: ${email}
 Address: ${address}
 Payment Method: ${method}
+Promo code:${promoCode}
 
 Items:
 ${itemDetails.map((item) => `- ${item.name} (${item.portion}) x${item.quantity}`).join("\n")}
@@ -84,6 +85,7 @@ Total: ₹${totalAmount}
            <strong>Email:</strong> ${email}<br/>
            <strong>Address:</strong> ${address}<br/>
            <strong>Payment Method:</strong> ${method}</p>
+             <strong>Promo code:</strong>${promoCode}</p>
 
         <h3>🛒 Order Items</h3>
         <table style="width: 100%; border-collapse: collapse;">

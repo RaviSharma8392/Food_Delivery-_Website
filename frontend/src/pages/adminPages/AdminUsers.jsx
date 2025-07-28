@@ -157,7 +157,7 @@ const AdminUsersPage = () => {
   ];
 
   const viewUserDetails = (user) => {
-    console.log("View user:", user);
+    // console.log("View user:", user);
   };
 
   return (

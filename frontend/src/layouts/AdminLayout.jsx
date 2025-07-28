@@ -15,7 +15,7 @@ const SystemLayout = () => {
   const location = useLocation();
   const data = useUserContext();
   const user = data.user;
-  console.log(data);
+  // console.log(data);
   const navItems = [
     { path: "/admin/dashboard", icon: <FiHome />, label: "Dashboard" },
     { path: "/admin/orders", icon: <FiShoppingBag />, label: "Orders" },

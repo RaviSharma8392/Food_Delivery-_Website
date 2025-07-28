@@ -12,8 +12,10 @@ const TWILIO_PHONE_NUMBER_TO = process.env.TWILIO_PHONE_NUMBER_TO;
 const EMAILPaSS=process.env.EMAILPaSS;
 const EMAIL=process.env.EMAIL
 const ADMINEMAIL=process.env.ADMINEMAIL
+const INSTAGRAM_QR_URL=process.env.INSTAGRAM_QR_URL
+const INSTAGRAM_HANDLE=process.env.INSTAGRAM_HANDLE
 
-export {
+export {INSTAGRAM_HANDLE,INSTAGRAM_QR_URL,
   URI,
   PORT,
   TOKEN_SECRET,

@@ -49,7 +49,7 @@ const PerformanceChart = () => {
       setError(null);
 
       const data = await getPerformanceAnalytics(timeRange, startDate, endDate);
-      console.log("Sales analytics data:", data);
+      // console.log("Sales analytics data:", data);
 
       setChartData({
         timeline: data.timeline || [],

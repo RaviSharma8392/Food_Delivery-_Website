@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico.png" type="image/png" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,6 +22,7 @@
       content="food delivery, online food order, Eats More, food app, restaurant delivery" />
     <meta name="author" content="Eats More Team" />
     <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#FF6B6B" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -29,7 +30,7 @@
     <meta
       property="og:description"
       content="Order delicious food online with Eats More – fast, fresh, and delivered to your door." />
-    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:image" content="https://www.eatsmore.com/og-image.jpg" />
     <meta property="og:url" content="https://www.eatsmore.com" />
 
     <!-- Twitter -->
@@ -38,7 +39,9 @@
     <meta
       name="twitter:description"
       content="Order delicious food online with Eats More – fast, fresh, and delivered to your door." />
-    <meta name="twitter:image" content="/og-image.jpg" />
+    <meta
+      name="twitter:image"
+      content="https://www.eatsmore.com/og-image.jpg" />
 
     <!-- Canonical -->
     <link rel="canonical" href="https://www.eatsmore.com/" />
@@ -50,7 +53,11 @@
         "@type": "Organization",
         "name": "Eats More",
         "url": "https://www.eatsmore.com",
-        "logo": "https://www.eatsmore.com/logo.png",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.eatsmore.com/logo.png",
+          "caption": "Eats More logo"
+        },
         "sameAs": [
           "https://facebook.com/eatsmore",
           "https://instagram.com/eatsmore",
@@ -62,6 +69,7 @@
 
   <body>
     <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

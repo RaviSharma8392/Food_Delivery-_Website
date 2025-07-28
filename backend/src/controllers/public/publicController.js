@@ -214,7 +214,7 @@ export const placeOrder = async (req, res) => {
       deliveryFee,
       totalAmount,
       items,
-      restaurantId,
+      restaurantId,promoCode
     } = req.body;
 
     if (
@@ -250,7 +250,7 @@ export const placeOrder = async (req, res) => {
       deliveryFee,
       totalAmount,
       items,
-      restaurantId,
+      restaurantId,promoCode
     });
 
     await newOrder.save();
@@ -266,7 +266,7 @@ export const placeOrder = async (req, res) => {
       deliveryFee,
       totalAmount,
       items,
-      restaurantId,
+      restaurantId,promoCode
     });
 
     return res.status(StatusCodes.CREATED).json({

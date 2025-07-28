@@ -11,6 +11,8 @@ import CategoryItemsPage from "./pages/userPages/Category";
 import AddCategory from "./components/adminComponents/Category/AddCategory";
 import OrderForRestaurents from "./screens/kitchenScreen/kitchenDashBoard/RestaurentDashboard";
 import RestaurentDashboard from "./screens/kitchenScreen/kitchenDashBoard/RestaurentDashboard";
+import ForgotPassword from "./components/login/ForgotPassword";
+import ResetPassword from "./components/login/ResetPassword";
 
 // Layouts
 const UserLayout = lazy(() => import("./layouts/UserLayout"));
@@ -45,6 +47,7 @@ const Cart = lazy(() => import("./screens/userScreen/cart/Cart"));
 const PlaceOrder = lazy(() =>
   import("./screens/userScreen/placeOrder/PlaceOrder")
 );
+
 const PlaceOrder2 = lazy(() =>
   import("./screens/userScreen/placeOrder/PlaceOrder2")
 );
@@ -298,6 +301,8 @@ const App = () => {
             {/* Auth */}
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
 
             {/* 404 Not Found */}
             <Route path="*" element={<NotFound />} />

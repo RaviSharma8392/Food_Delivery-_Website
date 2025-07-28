@@ -17,7 +17,7 @@ export default function OrderHistory() {
         `${BASE_URL}/api/v1/user/myOrders/${user.user._id}`
       );
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
 
       if (data.success) {
         setOrders(data.orders);

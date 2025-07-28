@@ -38,13 +38,13 @@ const AdminDashBoard = () => {
           activeRestaurants: restaurants.active || 0,
           deliveryPartners: partners.active || 0,
         });
-        console.log({
-          totalOrders: orders.total || 0,
-          pendingOrders: orders.pending || 0,
-          completedOrders: orders.completed || 0,
-          activeRestaurants: restaurants.active || 0,
-          deliveryPartners: partners.active || 0,
-        });
+        // console.log({
+        //   totalOrders: orders.total || 0,
+        //   pendingOrders: orders.pending || 0,
+        //   completedOrders: orders.completed || 0,
+        //   activeRestaurants: restaurants.active || 0,
+        //   deliveryPartners: partners.active || 0,
+        // });
       } catch (error) {
         console.error("Error loading dashboard stats:", error);
       } finally {

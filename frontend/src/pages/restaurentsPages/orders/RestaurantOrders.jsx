@@ -13,8 +13,8 @@ import { toast } from "react-toastify";
 import "./RestaurantOrders.css";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-console.log(BASE_URL);
-console.log("why are you calling me");
+// console.log(BASE_URL);
+// console.log("why are you calling me");
 const RestaurantOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);

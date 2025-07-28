@@ -9,7 +9,7 @@ const ProtectRoute = ({ allowedRole }) => {
   }
 
   const role = user?.user?.role;
-  console.log(role);
+  // console.log(role);
 
   // 🚫 Not logged in
   if (!role) {

@@ -29,7 +29,7 @@ export default function Login() {
       const data = await loginUser(credentials);
       login(data);
 
-      console.log(data);
+      // console.log(data);
       const redirectPath =
         data?.user?.role === "Admin"
           ? "/admin"
