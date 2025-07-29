@@ -53,20 +53,20 @@ const NavbarFooter = () => {
             </Link>
 
             {/* Local Products Button */}
-            <Link
+            {/* <Link
               to="/local-products"
               className="flex flex-col items-center justify-center text-gray-600 hover:text-amber-700 transition-colors flex-1">
               <FaStore className="text-xl" />
               <span className="text-xs mt-1">Local</span>
-            </Link>
+            </Link> */}
 
             {/* Vegan Option Button */}
-            <Link
+            {/* <Link
               to="/vegan"
               className="flex flex-col items-center justify-center text-gray-600 hover:text-green-600 transition-colors flex-1">
               <FaLeaf className="text-xl" />
               <span className="text-xs mt-1">Vegan</span>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </footer>

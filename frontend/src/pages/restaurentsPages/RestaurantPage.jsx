@@ -36,14 +36,14 @@ const RestaurantPage = () => {
   return (
     <>
       <Helmet>
-        <title>{decodedName} | Order Online | TasteKumaon</title>
+        <title>{decodedName} | Order Online | Munchizo</title>
         <meta
           name="description"
           content={`Order delicious food online from ${decodedName}. Fast delivery and traditional Kumaoni dishes.`}
         />
         <link
           rel="canonical"
-          href={`https://tastekumaon.com/restaurant/${restaurantName}`}
+          href={`https://Munchizo.com/restaurant/${restaurantName}`}
         />
       </Helmet>
 

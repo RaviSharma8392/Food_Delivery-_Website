@@ -161,7 +161,7 @@ export const forgotPassword = async (req, res) => {
 
   resetTokens[email] = { token, expires };
 
-  const resetLink = `http://localhost:5173/reset-password/${token}?email=${email}`;
+  const resetLink = `https://munchiza.netlify.app/reset-password/${token}?email=${email}`;
   await sendEmail(email, resetLink);
 
   res.json({ message: "Reset link sent to your email." });

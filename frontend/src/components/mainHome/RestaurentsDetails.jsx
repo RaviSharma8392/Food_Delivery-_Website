@@ -89,7 +89,7 @@ const RestaurantList = () => {
   }
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white mt-20 min-h-screen">
       {/* SEO metadata */}
       <Helmet>
         <title>
@@ -101,21 +101,53 @@ const RestaurantList = () => {
         />
         <link
           rel="canonical"
-          href={`https://tastekumaon.com/restaurants/${city.toLowerCase()}`}
+          href={`https://munchizo.com/restaurants/${city.toLowerCase()}`}
         />
       </Helmet>
 
       {/* Sticky page header */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Restaurants in {city}
-          </h1>
+      <div className="bg-white shadow-sm sticky top-0 z-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+          {/* Desktop & Tablet View */}
+          <div className="hidden sm:block">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
+              Discover the best restaurant in{" "}
+              <span className=" text-gray-900">
+                {city
+                  ? city.charAt(0).toUpperCase() + city.slice(1)
+                  : "your city"}
+              </span>
+            </h1>
+            <p className="text-gray-600 mt-1 text-sm md:text-base">
+              Order from top-rated restaurants near you • Fast delivery • Great
+              deals
+            </p>
+          </div>
+
+          {/* Mobile View */}
+          <div className="sm:hidden">
+            <h1 className="text-xl font-bold text-gray-900 leading-snug">
+              Best restaurants in{" "}
+              <span className=" text-gray-900">
+                {city
+                  ? city.charAt(0).toUpperCase() + city.slice(1)
+                  : "your area"}
+              </span>
+            </h1>
+            <div className="flex items-center mt-1 text-xs text-gray-500">
+              <span className="flex items-center mr-3">
+                <FaStar className="text-yellow-400 mr-1" /> 4.5+ Ratings
+              </span>
+              <span className="flex items-center">
+                <FaClock className="mr-1" /> 30-45 min
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Search bar and filter UI */}
-      <div className="bg-gray-50 border-b">
+      <div className="bg-gray-50 ">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search input */}

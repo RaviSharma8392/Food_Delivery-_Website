@@ -6,20 +6,20 @@ const LocationsSection = () => {
   const navigate = useNavigate();
 
   const serviceAreas = [
-    {
-      id: 1,
-      name: "Nainital",
-      description: "Lakeside deliveries to Tallital & Mallital",
-      image:
-        "https://static2.tripoto.com/media/filter/tst/img/2175980/TripDocument/1636190404_images_21.jpeg",
-    },
-    {
-      id: 2,
-      name: "Kainchi Dham",
-      description: "Fruit belt of Kumaon",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8n61ztke8v_fNaWu0p2GYYXg4nFpqZH9STA&s",
-    },
+    // {
+    //   id: 1,
+    //   name: "Nainital",
+    //   description: "Lakeside deliveries to Tallital & Mallital",
+    //   image:
+    //     "https://static2.tripoto.com/media/filter/tst/img/2175980/TripDocument/1636190404_images_21.jpeg",
+    // },
+    // {
+    //   id: 2,
+    //   name: "Kainchi Dham",
+    //   description: "Fruit belt of Kumaon",
+    //   image:
+    //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8n61ztke8v_fNaWu0p2GYYXg4nFpqZH9STA&s",
+    // },
     {
       id: 3,
       name: "Sattal",
@@ -29,7 +29,7 @@ const LocationsSection = () => {
     },
     {
       id: 4,
-      name: "Nakuchiyatal",
+      name: "Naukuchiatal",
       description: "Nine-cornered lake area",
       image:
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/67/95/56/photo1jpg.jpg?w=1200&h=-1&s=1",
@@ -41,13 +41,13 @@ const LocationsSection = () => {
       image:
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/b5/20/0d/bhimtal-lake-nainital.jpg?w=1000&h=1000&s=1",
     },
-    {
-      id: 6,
-      name: "Mukteshwar",
-      description: "Scenic mountain views",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk7PXfPuEFIe-5fqjP6jsiZCyV_MJJ9G4k3Q&s",
-    },
+    // {
+    //   id: 6,
+    //   name: "Mukteshwar",
+    //   description: "Scenic mountain views",
+    //   image:
+    //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk7PXfPuEFIe-5fqjP6jsiZCyV_MJJ9G4k3Q&s",
+    // },
   ];
 
   const handleRedirect = (location) => {
@@ -113,12 +113,12 @@ const LocationsSection = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <button
+          {/* <button
             onClick={() => navigate("/locations")}
             className="inline-flex items-center px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-full shadow-md transition-colors">
             <FiMapPin className="mr-2" />
             See all service areas
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

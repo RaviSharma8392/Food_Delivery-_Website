@@ -5,19 +5,19 @@ const WhyChooseUs = () => {
   const benefits = [
     {
       title: "Lightning Fast Delivery",
-      description: "Get your food delivered in under 30 minutes or get it free",
+      description: "Get your food delivered in under 30-45 minutes ",
       icon: <FiClock className="w-8 h-8 text-orange-500" />,
       bg: "bg-orange-50",
     },
     {
       title: "Local Favorites",
-      description: "Handpicked menus from Nainital's best restaurants & chefs",
+      description: "Handpicked menus from Bhimtal's best restaurants & chefs",
       icon: <FiHeart className="w-8 h-8 text-red-500" />,
       bg: "bg-red-50",
     },
     {
       title: "Top-rated Service",
-      description: "10,000+ happy customers across the Nainital region",
+      description: "100+ happy customers across the Bhimtal region",
       icon: <FiAward className="w-8 h-8 text-blue-500" />,
       bg: "bg-blue-50",
     },
@@ -33,8 +33,8 @@ const WhyChooseUs = () => {
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Why Choose <span className="text-orange-500">CraveEats</span>?
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl whitespace-nowrap">
+            Why Choose Munchizo
           </h2>
           <p className="mt-4 max-w-2xl text-xl text-gray-600 mx-auto">
             We're not just delivering food, we're delivering experiences
@@ -58,7 +58,7 @@ const WhyChooseUs = () => {
           ))}
         </div>
 
-        <div className="mt-16 bg-white rounded-xl shadow-sm p-8 max-w-4xl mx-auto">
+        {/* <div className="mt-16 bg-white rounded-xl shadow-sm p-8 max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-6 md:mb-0">
               <h3 className="text-2xl font-bold text-gray-900 mb-3">
@@ -94,7 +94,7 @@ const WhyChooseUs = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

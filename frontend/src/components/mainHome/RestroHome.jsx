@@ -1,10 +1,9 @@
 import { FaStar, FaClock, FaRupeeSign } from "react-icons/fa";
-import { FiPlus } from "react-icons/fi";
 
 const RestaurantCard = ({ restaurant, onClick }) => {
   return (
     <div
-      className="w-full bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-100"
+      className="w-full bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-200"
       onClick={onClick}>
       {/* Restaurant Image */}
       <div className="relative h-48">
@@ -28,53 +27,52 @@ const RestaurantCard = ({ restaurant, onClick }) => {
 
         {/* Discount Tag */}
         {restaurant.offers && (
-          <div className="absolute bottom-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">
+          <div className="absolute bottom-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded font-medium">
             {restaurant.offers}
           </div>
         )}
+
+        {/* Delivery time */}
+        {/* <div className="absolute bottom-2 right-2 bg-white text-gray-800 text-xs px-2 py-1 rounded font-medium shadow">
+          {restaurant.deliveryTime} min
+        </div> */}
       </div>
 
       {/* Restaurant Details */}
-      <div className="p-3">
-        <div className="flex justify-between items-start mb-1">
-          <h3 className="font-bold text-gray-800 text-lg truncate pr-2">
-            {restaurant.name}
-          </h3>
-          <div className="flex items-center bg-green-50 px-2 py-1 rounded">
-            <FaStar className="text-green-600 mr-1 text-sm" />
-            <span className="font-semibold text-sm">
+      <div className="p-4">
+        <h3 className="font-bold text-gray-800 text-lg truncate mb-1">
+          {restaurant.name}
+        </h3>
+
+        <div className="flex items-center text-sm text-gray-600 mb-2">
+          <div className="flex items-center bg-green-50 px-1.5 py-0.5 rounded mr-2">
+            <FaStar className="text-green-600 mr-1 text-xs" />
+            <span className="font-semibold text-xs">
               {restaurant.avgRating}
             </span>
           </div>
+          <span>•</span>
+          <span className="mx-1 truncate">{restaurant.cuisine}</span>
+          <span>•</span>
+          <span className="ml-1">{restaurant.area}</span>
         </div>
 
-        <div className="flex items-center text-gray-500 text-sm mb-2">
-          <span className="truncate mr-2">{restaurant.cuisine}</span>
-          <span className="mx-1">•</span>
-          <span>{restaurant.area}</span>
+        <div className="flex items-center text-sm text-gray-500">
+          <FaRupeeSign className="mr-1" />
+          <span>{restaurant.costForTwo}</span>
         </div>
 
-        <div className="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-2">
-          <div className="flex items-center">
-            <FaClock className="mr-1" />
-            <span>{restaurant.deliveryTime}</span>
-          </div>
-          <div className="flex items-center">
-            <FaRupeeSign className="mr-1" />
-            <span>{restaurant.costForTwo}</span>
-          </div>
+        {/* Quick view button */}
+        <div className="mt-3 pt-3 border-t border-gray-100">
+          {/* <button
+            className="w-full text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Quick view logic here
+            }}>
+            QUICK VIEW
+          </button> */}
         </div>
-
-        {/* Quick Action Button */}
-        {/* <button
-          className="w-full mt-3 bg-orange-50 hover:bg-orange-100 text-orange-600 py-2 rounded-lg flex items-center justify-center font-medium text-sm transition-colors"
-          onClick={(e) => {
-            e.stopPropagation();
-            // Add to cart logic here
-          }}>
-          <FiPlus className="mr-1" />
-          QUICK VIEW
-        </button> */}
       </div>
     </div>
   );

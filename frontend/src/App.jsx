@@ -235,7 +235,6 @@ const App = () => {
           {user?.role === "User" && shouldShowNavAndFooter && (
             <NotificationButton />
           )}
-
           <Routes>
             {/* Public Pages */}
             {/* <Route path="/new" element={<RestaurantsPageLists />} />

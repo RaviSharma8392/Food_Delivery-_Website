@@ -28,7 +28,7 @@ const Homepage = () => {
       const toastShown = localStorage.getItem("welcomeToastShown");
       if (!toastShown) {
         toast.success(
-          "🍽️ Welcome to SavoryBites – Bhimtal's local food delivery!",
+          "🍽️ Welcome to Munchizo – Bhimtal's local food delivery!",
           {
             position: "top-center",
             autoClose: 5000,
@@ -75,14 +75,14 @@ const Homepage = () => {
       {showModal && <LocationModal onClose={handleModalClose} />}
 
       <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
-        <HeroBanner />
-        <MobileHeroBanner />
+        <HeroBanner onChangeLocation={() => setShowModal(true)} />
+        <MobileHeroBanner onChangeLocation={() => setShowModal(true)} />
         <CategoryList />
         <RestaurantList />
         <WhyChooseUs />
         <Deals />
         <LocationsSection />
-        <PopularRestaurants />
+        {/* <PopularRestaurants /> */}
         <HowItWorks />
       </Suspense>
     </div>

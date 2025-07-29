@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiSearch, FiStar, FiMapPin } from "react-icons/fi";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
-const HeroBanner = () => {
+const HeroBanner = ({ onChangeLocation }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [city, setCity] = useState("Select Location");
   const navigate = useNavigate();
+
+  // Load city from localStorage
+  useEffect(() => {
+    const savedCity = localStorage.getItem("userCity");
+    if (savedCity) {
+      setCity(savedCity.charAt(0).toUpperCase() + savedCity.slice(1));
+    }
+  }, []);
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
@@ -20,7 +29,7 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className=" hidden md:flex relative bg-gradient-to-br from-[#fff8f1] to-[#ffefe2] text-gray-900 py-12 md:py-20 px-4 sm:px-6 lg:px-8">
+    <section className="hidden md:flex relative bg-gradient-to-br from-[#fff8f1] to-[#ffefe2] text-gray-900 py-12 md:py-20 px-4 sm:px-6 lg:px-8">
       <Helmet>
         <title>Delicious Food Delivery | CraveEats</title>
         <meta
@@ -73,9 +82,15 @@ const HeroBanner = () => {
             </button>
           </div>
 
-          <div className="mt-4 bg-white/80 backdrop-blur-sm py-3 px-4 rounded-full shadow-sm inline-flex items-center text-sm font-medium">
+          {/* Location Display + Change Button */}
+          <div
+            className="mt-4 bg-white/80 backdrop-blur-sm py-3 px-4 rounded-full shadow-sm inline-flex items-center text-sm font-medium cursor-pointer hover:shadow-md transition"
+            onClick={onChangeLocation}>
             <FiMapPin className="text-orange-500 mr-2" />
-            Delivering to: Nainital • Bhimtal • Bhowali • Naukuchiatal • Sattal
+            Delivering to: {city}
+            <span className="ml-2 text-orange-500 underline text-xs font-semibold">
+              (Change)
+            </span>
           </div>
         </div>
 

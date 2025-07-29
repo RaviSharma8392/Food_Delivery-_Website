@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiSearch, FiStar, FiMapPin, FiChevronRight } from "react-icons/fi";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
-const MobileHeroBanner = () => {
+const MobileHeroBanner = ({ onChangeLocation }) => {
   const navigate = useNavigate();
+  const [city, setCity] = useState("Select Location");
+
+  // Fetch city from localStorage
+  useEffect(() => {
+    const savedCity = localStorage.getItem("userCity");
+    if (savedCity) {
+      // Capitalize first letter for better display
+      setCity(savedCity.charAt(0).toUpperCase() + savedCity.slice(1));
+    }
+  }, []);
 
   return (
-    <section className=" md:hidden relative bg-gradient-to-br from-[#fff8f1] to-[#ffefe2] text-gray-900 pt-6 pb-8 px-4">
+    <section className="md:hidden relative bg-gradient-to-br from-[#fff8f1] to-[#ffefe2] text-gray-900 pt-6 pb-8 px-4">
       <Helmet>
         <title>Delicious Food Delivery | CraveEats</title>
         <meta
@@ -23,19 +33,16 @@ const MobileHeroBanner = () => {
         </span>
       </div>
 
-      {/* Always Visible Search Input */}
+      {/* Search Input */}
       <div className="relative mb-5">
         <FiSearch className="absolute left-4 top-3 text-orange-500 text-lg" />
-
-        {/* Just click input to redirect */}
         <input
           type="text"
           placeholder="Search Momos, Thukpa, Pizza..."
           onClick={() => navigate("/search")}
           className="w-full py-3 pl-12 pr-20 rounded-full shadow border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm cursor-pointer"
-          readOnly // Optional: prevents typing, making it a "click to search" field
+          readOnly
         />
-
         <button
           onClick={() => navigate("/search")}
           className="absolute right-4 top-2.5 text-white bg-orange-500 hover:bg-orange-600 px-4 py-1.5 rounded-full text-sm font-semibold">
@@ -89,16 +96,19 @@ const MobileHeroBanner = () => {
         ))}
       </div>
 
-      {/* Location */}
-      <div className="bg-white/80 backdrop-blur-md py-2 px-3 rounded-full shadow-sm flex items-center justify-between mb-5">
+      {/* Location Display & Change Button */}
+      <button
+        onClick={onChangeLocation}
+        className="w-full bg-white/80 backdrop-blur-md py-2 px-3 rounded-full shadow-sm flex items-center justify-between mb-5 focus:outline-none">
         <div className="flex items-center">
           <FiMapPin className="text-orange-500 mr-2 text-sm" />
-          <span className="text-xs font-medium">
-            Nainital, Bhimtal, Bhowali
+          <span className="text-xs font-medium text-left">
+            Delivering to: <span className="font-semibold">{city}</span>
+            <span className="ml-1 text-orange-500 underline">(Change)</span>
           </span>
         </div>
         <FiChevronRight className="text-gray-500 text-sm" />
-      </div>
+      </button>
 
       {/* Rating Badge */}
       <div className="absolute top-4 right-4 bg-white p-2 rounded-xl shadow-sm border border-orange-100 flex items-center">
